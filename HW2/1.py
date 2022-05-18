@@ -1,6 +1,7 @@
 import chardet
 import re
 import csv
+import glob
 
 
 def get_coding(file_name):
@@ -9,10 +10,10 @@ def get_coding(file_name):
 
 
 def get_data():
+    file_list = glob.glob('*.txt')
     os_prod_list, os_name_list, os_code_list, os_type_list = [], [], [], []
     main_data = [['Изготовитель системы', 'Название ОС', 'Код продукта', 'Тип системы']]
-    for i in range(1, 4):
-        file = f'info_{i}.txt'
+    for file in file_list:
         with open(file, 'r', encoding=get_coding(file)) as f:
             ready_file = f.read()
             item_os_prod = re.search(r'Изготовитель системы:\s+(\b\w+)', ready_file)
