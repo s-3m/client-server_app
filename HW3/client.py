@@ -16,7 +16,7 @@ def create_client_message(action, msg_text=None):
 def process_answer(answer):
     if "response" in answer:
         if answer["response"] == 200:
-            return f'Соединение с сервером установлено. ' \
+            return f'Cоединение с сервером установлено. ' \
                    f'Код - {answer["response"]}. Статус: {answer["status"]}'
         return f'400 : {answer["error"]}'
     raise ValueError
