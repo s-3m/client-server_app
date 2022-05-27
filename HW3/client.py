@@ -1,9 +1,11 @@
 import socket
 import sys
 import time
-
 from common.utils import send_message, get_message
+import logging
+from logs import client_log_config
 
+log = logging.getLogger('client')
 
 def create_client_message(action, msg_text=None):
     msg = {"action": action,
@@ -23,6 +25,7 @@ def process_answer(answer):
 
 
 def main():
+    log.debug('Процесс запущен')
     try:
         server_address = sys.argv[1]
         server_port = int(sys.argv[2])
