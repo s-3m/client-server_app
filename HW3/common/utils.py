@@ -1,6 +1,8 @@
 import json
+from log_decorator import log_
 
 
+@log_
 def send_message(client_socket, message):
     if not isinstance(message, dict):
         raise ValueError
@@ -9,6 +11,7 @@ def send_message(client_socket, message):
     client_socket.send(encoding_message)
 
 
+@log_
 def get_message(client_socket):
     encoding_response = client_socket.recv(4096)
     if isinstance(encoding_response, bytes):

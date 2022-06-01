@@ -3,11 +3,12 @@ import sys
 import time
 from common.utils import send_message, get_message
 import logging
+from log_decorator import log_
 from logs import client_log_config
 
 log = logging.getLogger('client')
 
-
+@log_
 def create_client_message(action, msg_text=None):
     msg = {"action": action,
            "time": time.time(),
@@ -16,7 +17,7 @@ def create_client_message(action, msg_text=None):
     log.info(f'Пользователем "{msg["user"]["account_name"]}" Создано клиентское сообщение типа "{action}".')
     return msg
 
-
+@log_
 def process_answer(answer):
     if "response" in answer:
         if answer["response"] == 200:
