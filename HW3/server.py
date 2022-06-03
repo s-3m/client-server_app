@@ -3,11 +3,12 @@ import socket
 import sys
 from common.utils import send_message, get_message
 import logging
+from log_decorator import log_
 from logs import server_log_config
 
 log = logging.getLogger('server')
 
-
+@log_
 def create_server_message(message):
     log.info('Обращение к функции "create_server_message"')
     if "action" in message and message["action"] == "presence" and "time" in message \

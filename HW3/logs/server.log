@@ -9,3 +9,210 @@
 2022-05-30 14:35:19,262 - INFO - server - Сформирован ответ. Статус - 200
 2022-05-30 14:35:19,262 - INFO - server - Сообщение успешно отправлено клиенту
 2022-05-30 14:35:19,263 - INFO - server - Server listens...IP: 127.0.0.1 on 9999 port
+2022-06-01 11:29:57,013 - INFO - server - Старт сервера.
+2022-06-01 11:29:57,013 - INFO - server - Сервер слушает порт - 7777
+2022-06-01 11:29:57,013 - INFO - server - Сервер слушает - 
+2022-06-01 11:29:57,014 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:30:22,339 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: ('presence',)
+2022-06-01 11:30:22,339 - INFO - server - Получено сообщение "['presence']" от Guest
+2022-06-01 11:30:22,340 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 11:30:22,340 - INFO - server - Сформирован ответ. Статус - 400
+2022-06-01 11:30:22,340 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:30:22,340 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:30:22,340 - INFO - log_decorator - Обращение к функции process_answer с аргументами: ({'response': 400, 'error': 'Bad Request'},)
+2022-06-01 11:32:06,471 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:32:06,472 - INFO - server - Получено сообщение "{}" от Guest
+2022-06-01 11:32:06,473 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 11:32:06,473 - INFO - server - Сформирован ответ. Статус - 400
+2022-06-01 11:32:06,473 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:32:06,473 - INFO - log_decorator - Обращение к функции process_answer с аргументами: (({'response': 400, 'error': 'Bad Request'},), {})
+2022-06-01 11:32:06,473 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:34:31,148 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:34:31,148 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=128, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61950), raddr=('127.0.0.1', 7777)>, {'action': {}, 'time': 1654072471.1482525, 'user': {'account_name': 'Guest'}}), {})
+2022-06-01 11:34:31,148 - CRITICAL - server - Ошибка! Неправильный формат сообщеня.
+2022-06-01 11:35:41,371 - INFO - server - Старт сервера.
+2022-06-01 11:35:41,371 - INFO - server - Сервер слушает порт - 7777
+2022-06-01 11:35:41,371 - INFO - server - Сервер слушает - 
+2022-06-01 11:35:41,372 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:35:48,177 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:35:48,178 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=392, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 61955)>,), {})
+2022-06-01 11:35:48,178 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=420, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61955), raddr=('127.0.0.1', 7777)>, {'action': ('presence',), 'time': 1654072548.1788476, 'user': {'account_name': 'Guest'}}), {})
+2022-06-01 11:40:08,149 - INFO - server - Старт сервера.
+2022-06-01 11:40:08,149 - INFO - server - Сервер слушает порт - 7777
+2022-06-01 11:40:08,149 - INFO - server - Сервер слушает - 
+2022-06-01 11:40:08,150 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:40:39,216 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=316, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 61991)>,), {})
+2022-06-01 11:41:48,488 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:43:26,831 - INFO - server - Старт сервера.
+2022-06-01 11:43:26,831 - INFO - server - Сервер слушает порт - 7777
+2022-06-01 11:43:26,831 - INFO - server - Сервер слушает - 
+2022-06-01 11:43:26,832 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:43:28,950 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:43:28,950 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=368, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62011)>,), {})
+2022-06-01 11:43:28,951 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=392, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62011), raddr=('127.0.0.1', 7777)>, {'action': ('presence',), 'time': 1654073008.9501157, 'user': {'account_name': 'Guest'}}), {})
+2022-06-01 11:44:18,412 - INFO - server - Старт сервера.
+2022-06-01 11:44:18,412 - INFO - server - Сервер слушает порт - 7777
+2022-06-01 11:44:18,412 - INFO - server - Сервер слушает - 
+2022-06-01 11:44:18,413 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:44:20,597 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:44:20,597 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62013)>,), {})
+2022-06-01 11:44:20,597 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=284, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62013), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654073060.5972385, 'user': {'account_name': 'Guest'}}), {})
+2022-06-01 11:44:20,597 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 11:44:20,597 - INFO - server - Обращение к функции "create_server_message"
+�гументами: ((<socket.socket fd=284, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62013), raddr=('127.0.0.1', 7777)>,), {})
+2022-06-01 11:44:20,597 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 11:44:20,597 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62013)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 11:44:20,597 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:44:20,597 - INFO - log_decorator - Обращение к функции process_answer с аргументами: (({'response': 200, 'status': 'OK'},), {})
+2022-06-01 11:44:20,598 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:45:36,480 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:45:36,480 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=304, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62020), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654073136.4801888, 'user': {'account_name': 'Guest'}}), {})
+2022-06-01 11:45:36,480 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=304, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62020), raddr=('127.0.0.1', 7777)>,), {})
+2022-06-01 11:45:36,480 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=444, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62020)>,), {})
+2022-06-01 11:45:36,480 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 11:45:36,480 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 11:45:36,480 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 11:45:36,481 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=444, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62020)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 11:45:36,481 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:45:36,481 - INFO - log_decorator - Обращение к функции process_answer с аргументами: (({'response': 200, 'status': 'OK'},), {})
+2022-06-01 11:45:36,481 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:45:50,748 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=508, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62025)>,), {})
+2022-06-01 11:45:57,728 - CRITICAL - server - Ошибка! Неправильный формат сообщеня.
+2022-06-01 11:46:29,186 - INFO - server - Старт сервера.
+2022-06-01 11:46:29,186 - INFO - server - Сервер слушает порт - 7777
+2022-06-01 11:46:29,186 - INFO - server - Сервер слушает - 
+2022-06-01 11:46:29,187 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:46:36,491 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:46:36,491 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62046)>,), {})
+2022-06-01 11:46:36,492 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=732, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62046), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654073196.4910493, 'user': {'account_name': 'Guest'}}), {})
+2022-06-01 11:46:36,493 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 11:46:36,493 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 11:46:36,493 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=732, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62046), raddr=('127.0.0.1', 7777)>,), {})
+2022-06-01 11:46:36,493 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62046)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 11:46:36,493 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:46:36,493 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:46:36,494 - INFO - log_decorator - Обращение к функции process_answer с аргументами: (({'response': 200, 'status': 'OK'},), {})
+2022-06-01 11:47:14,878 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:47:14,878 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=464, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62053)>,), {})
+2022-06-01 11:47:14,878 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=360, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62053), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654073234.8780973, 'user': {'account_name': 'Guest'}}), {})
+2022-06-01 11:47:14,879 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 11:47:14,879 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 11:47:14,880 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 11:47:14,879 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=360, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62053), raddr=('127.0.0.1', 7777)>,), {})
+2022-06-01 11:47:14,880 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=464, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62053)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 11:47:14,880 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:47:14,880 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:47:14,880 - INFO - log_decorator - Обращение к функции process_answer с аргументами: (({'response': 200, 'status': 'OK'},), {})
+2022-06-01 11:47:34,982 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:47:34,982 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62060)>,), {})
+2022-06-01 11:47:34,983 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=676, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62060), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654073254.9824586, 'user': {'account_name': 'Guest'}}), {})
+2022-06-01 11:47:34,984 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 11:47:34,984 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 11:47:34,984 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 11:47:34,984 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62060)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 11:47:34,984 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=676, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62060), raddr=('127.0.0.1', 7777)>,), {})
+2022-06-01 11:47:34,984 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:47:34,985 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:47:34,985 - INFO - log_decorator - Обращение к функции process_answer с аргументами: (({'response': 200, 'status': 'OK'},), {})
+2022-06-01 11:49:06,742 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:49:06,743 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=308, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62078), raddr=('127.0.0.1', 7777)>, None), {})
+2022-06-01 11:49:06,743 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=356, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62078)>,), {})
+2022-06-01 11:49:06,743 - CRITICAL - server - Ошибка! Неправильный формат сообщеня.
+2022-06-01 11:50:41,756 - INFO - server - Старт сервера.
+2022-06-01 11:50:41,756 - INFO - server - Сервер слушает порт - 7777
+2022-06-01 11:50:41,756 - INFO - server - Сервер слушает - 
+2022-06-01 11:50:41,758 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:50:46,101 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: (('presence',), {})
+2022-06-01 11:50:46,101 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=280, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62096)>,), {})
+2022-06-01 11:50:46,102 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=420, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62096), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654073446.1029887, 'user': {'account_name': 'Guest'}}), {})
+2022-06-01 11:50:46,102 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 11:50:46,102 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 11:50:46,102 - INFO - server - Сформирован ответ. Статус - 200
+ с аргументами: ((<socket.socket fd=420, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62096), raddr=('127.0.0.1', 7777)>,), {})
+2022-06-01 11:50:46,102 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=280, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62096)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 11:50:46,103 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:50:46,103 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:50:46,103 - INFO - log_decorator - Обращение к функции process_answer с аргументами: (({'response': 200, 'status': 'OK'},), {})
+2022-06-01 11:50:51,771 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=468, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62101)>,), {})
+2022-06-01 11:51:43,822 - CRITICAL - server - Ошибка! Неправильный формат сообщеня.
+2022-06-01 11:52:03,934 - INFO - server - Старт сервера.
+2022-06-01 11:52:03,935 - INFO - server - Сервер слушает порт - 7777
+2022-06-01 11:52:03,935 - INFO - server - Сервер слушает - 
+2022-06-01 11:52:03,936 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:52:09,053 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62115)>,), {})
+2022-06-01 11:52:09,053 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 11:52:09,053 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 11:52:09,054 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 11:52:09,054 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62115)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 11:52:09,054 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:52:09,054 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 11:55:53,517 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=392, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62138)>,), {})
+2022-06-01 11:55:53,517 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 11:55:53,517 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 11:55:53,517 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 11:55:53,517 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=392, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62138)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 11:55:53,517 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 11:55:53,517 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 12:12:41,918 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62232)>,), {})
+2022-06-01 12:12:41,920 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 12:12:41,920 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 12:12:41,920 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 12:12:41,920 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62232)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 12:12:41,921 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 12:12:41,921 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 12:13:13,142 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=324, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62237)>,), {})
+2022-06-01 12:13:13,143 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 12:13:13,143 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 12:13:13,144 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 12:13:13,144 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=324, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62237)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 12:13:13,144 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 12:13:13,144 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 12:14:03,701 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=392, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62241)>,), {})
+2022-06-01 12:14:03,702 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 12:14:03,702 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 12:14:03,702 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 12:14:03,702 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=392, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62241)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 12:14:03,702 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 12:14:03,702 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 12:14:26,103 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62244)>,), {})
+2022-06-01 12:14:26,105 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 12:14:26,105 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 12:14:26,105 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 12:14:26,105 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62244)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 12:14:26,105 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 12:14:26,105 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 12:15:02,620 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=392, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62248)>,), {})
+2022-06-01 12:15:02,621 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 12:15:02,621 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 12:15:02,621 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 12:15:02,621 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=392, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62248)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 12:15:02,621 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 12:15:02,621 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 12:15:20,454 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=368, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62251)>,), {})
+2022-06-01 12:15:20,455 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 12:15:20,455 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 12:15:20,455 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 12:15:20,455 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=368, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62251)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 12:15:20,455 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 12:15:20,456 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 12:19:36,134 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=324, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62295)>,), {})
+2022-06-01 12:19:36,136 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 12:19:36,136 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 12:19:36,136 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 12:19:36,136 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=324, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62295)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 12:19:36,136 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 12:19:36,136 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 12:20:55,053 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=368, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62302)>,), {})
+2022-06-01 12:20:55,054 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 12:20:55,054 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 12:20:55,054 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 12:20:55,054 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=368, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62302)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 12:20:55,054 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 12:20:55,055 - INFO - server - Server listens...IP:  on 7777 port
+2022-06-01 12:22:19,288 - INFO - log_decorator - Обращение к функции get_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62309)>,), {})
+2022-06-01 12:22:19,290 - INFO - server - Получено сообщение "presence" от Guest
+2022-06-01 12:22:19,290 - INFO - server - Обращение к функции "create_server_message"
+2022-06-01 12:22:19,290 - INFO - server - Сформирован ответ. Статус - 200
+2022-06-01 12:22:19,290 - INFO - log_decorator - Обращение к функции send_message с аргументами: ((<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 62309)>, {'response': 200, 'status': 'OK'}), {})
+2022-06-01 12:22:19,291 - INFO - server - Сообщение успешно отправлено клиенту
+2022-06-01 12:22:19,291 - INFO - server - Server listens...IP:  on 7777 port
