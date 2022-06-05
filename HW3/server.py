@@ -21,8 +21,9 @@ def create_server_message(message, message_list, client):
         return
 
     elif "action" in message and message["action"] == "message" and "time" in message \
-            and "user" in message and message["text"] in message:
+            and "user" in message and "text" in message:
         message_list.append((message['user']['account_name'], message['text']))
+        log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["user"]["account_name"]}')
         return
 
     else:
