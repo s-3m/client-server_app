@@ -271,3 +271,44 @@
 2022-06-05 18:03:52,235 - INFO - log_decorator - Обращение к функции send_message с аргументами: (<socket.socket fd=664, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61444), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654441432.2359855, 'user': {'account_name': 'Guest'}}), {} ||| Вызывающая функия - "main()"
 2022-06-05 18:03:52,236 - INFO - client_read - Сообщение на сервер отправлено.
 2022-06-05 18:03:52,236 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=664, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61444), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:54:46,092 - INFO - client_read - Процесс соединения с сервером запущен.
+2022-06-06 10:54:46,119 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: ('presence',), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:54:46,119 - INFO - client_read - Пользователем "Guest" Создано клиентское сообщение типа "presence".
+2022-06-06 10:54:46,120 - INFO - log_decorator - Обращение к функции send_message с аргументами: (<socket.socket fd=328, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61521), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654502086.1198065, 'user': {'account_name': 'Guest'}}), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:54:46,120 - INFO - client_read - Сообщение на сервер отправлено.
+2022-06-06 10:54:46,120 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=328, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61521), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:54:47,120 - INFO - log_decorator - Обращение к функции process_answer с аргументами: ({'response': 200, 'status': 'OK'},), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:54:47,121 - INFO - client_read - Сообщение от сервера - Код - 200. Статус: OK
+2022-06-06 10:54:47,122 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: ('message',), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:15,659 - INFO - client_read - Процесс соединения с сервером запущен.
+2022-06-06 10:56:15,660 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: ('presence',), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:15,661 - INFO - client_read - Пользователем "Guest" Создано клиентское сообщение типа "presence".
+2022-06-06 10:56:15,661 - INFO - log_decorator - Обращение к функции send_message с аргументами: (<socket.socket fd=312, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61525), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654502175.6614866, 'user': {'account_name': 'Guest'}}), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:15,661 - INFO - client_read - Сообщение на сервер отправлено.
+2022-06-06 10:56:15,661 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=312, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61525), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:16,676 - INFO - log_decorator - Обращение к функции process_answer с аргументами: ({'response': 200, 'status': 'OK'},), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:16,677 - INFO - client_read - Сообщение от сервера - Код - 200. Статус: OK
+2022-06-06 10:56:16,678 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=312, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61525), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:24,314 - INFO - client_read - Процесс соединения с сервером запущен.
+2022-06-06 10:56:24,316 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: ('presence',), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:24,316 - INFO - client_read - Пользователем "Guest" Создано клиентское сообщение типа "presence".
+2022-06-06 10:56:24,316 - INFO - log_decorator - Обращение к функции send_message с аргументами: (<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61526), raddr=('127.0.0.1', 7777)>, {'action': 'presence', 'time': 1654502184.3165302, 'user': {'account_name': 'Guest'}}), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:24,316 - INFO - client_read - Сообщение на сервер отправлено.
+2022-06-06 10:56:24,316 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61526), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:25,327 - INFO - log_decorator - Обращение к функции process_answer с аргументами: ({'response': 200, 'status': 'OK'},), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:25,328 - INFO - client_read - Сообщение от сервера - Код - 200. Статус: OK
+2022-06-06 10:56:25,329 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61526), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:30,626 - INFO - client_read - Пользователем "Guest" отправлено сообщение: "Hi"
+2022-06-06 10:56:30,626 - INFO - log_decorator - Обращение к функции send_message с аргументами: (<socket.socket fd=328, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61521), raddr=('127.0.0.1', 7777)>, {'action': 'message', 'time': 1654502190.6266637, 'user': {'account_name': 'Guest'}, 'text': 'Hi'}), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:30,627 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: ('message',), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:31,414 - INFO - log_decorator - Обращение к функции process_answer с аргументами: ({'action': 'message', 'sender': 'Guest', 'time': 1654502191.4084103, 'text': 'Hi'},), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:31,416 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=312, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61525), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:31,416 - INFO - log_decorator - Обращение к функции process_answer с аргументами: ({'action': 'message', 'sender': 'Guest', 'time': 1654502191.4084103, 'text': 'Hi'},), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:31,417 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61526), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:39,100 - INFO - client_read - Пользователем "Guest" отправлено сообщение: "my name is re"
+2022-06-06 10:56:39,101 - INFO - log_decorator - Обращение к функции send_message с аргументами: (<socket.socket fd=328, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61521), raddr=('127.0.0.1', 7777)>, {'action': 'message', 'time': 1654502199.1009543, 'user': {'account_name': 'Guest'}, 'text': 'my name is re'}), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:39,101 - INFO - log_decorator - Обращение к функции create_client_message с аргументами: ('message',), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:39,526 - INFO - log_decorator - Обращение к функции process_answer с аргументами: ({'action': 'message', 'sender': 'Guest', 'time': 1654502199.5220726, 'text': 'my name is re'},), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:39,528 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=312, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61525), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:39,528 - INFO - log_decorator - Обращение к функции process_answer с аргументами: ({'action': 'message', 'sender': 'Guest', 'time': 1654502199.5220726, 'text': 'my name is re'},), {} ||| Вызывающая функия - "main()"
+2022-06-06 10:56:39,528 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61526), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"

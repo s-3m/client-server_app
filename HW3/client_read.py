@@ -10,13 +10,24 @@ log = logging.getLogger('client')
 
 
 @log_
-def create_client_message(action, msg_text=None):
-    msg = {"action": action,
-           "time": time.time(),
-           "user": {"account_name": "Guest"}
-           }
-    log.info(f'Пользователем "{msg["user"]["account_name"]}" Создано клиентское сообщение типа "{action}".')
-    return msg
+def create_client_message(action):
+    if action == 'presence':
+        msg = {"action": action,
+               "time": time.time(),
+               "user": {"account_name": "Guest"}
+               }
+        log.info(f'Пользователем "{msg["user"]["account_name"]}" Создано клиентское сообщение типа "{action}".')
+        return msg
+    elif action == 'message':
+        msg_text = input('Input message: ')
+        msg = {
+            "action": action,
+            "time": time.time(),
+            "user": {"account_name": "Guest"},
+            "text": msg_text
+        }
+        log.info(f'Пользователем "{msg["user"]["account_name"]}" отправлено сообщение: "{msg_text}"')
+        return msg
 
 
 @log_
@@ -37,13 +48,16 @@ def main():
     try:
         server_address = sys.argv[1]
         server_port = int(sys.argv[2])
+        client_mode = sys.argv[3]
         if server_port > 65535 or server_port < 1024:
             raise ValueError
     except IndexError:
         server_address = '127.0.0.1'
         server_port = 7777
+        client_mode = 'send'
+        print(f'Не передан режим работы. Использован режим "{client_mode}"')
         log.warning(f'Параметры не переданы. Использованы параметры по умолчанию - '
-                    f'IP: {server_address}; PORT: {server_port}')
+                    f'IP: {server_address}; PORT: {server_port}; MODE: {client_mode}')
     except ValueError as val_err:
         log.error(f'Указан недопустимый порт - {server_port}')
         sys.exit(1)
@@ -61,11 +75,19 @@ def main():
             sys.exit(1)
 
         while True:
-            try:
-                print(process_answer(get_message(client_socket)))
-            except ValueError as err:
-                print('Ошибка при приеме сообщения.')
-                log.error(f'Не удалось разобрать сообщение от сервера. {err}')
+            if client_mode == 'read':
+                try:
+                    print(process_answer(get_message(client_socket)))
+                except ValueError as err:
+                    print('Ошибка при приеме сообщения.')
+                    log.error(f'Не удалось разобрать сообщение от сервера. {err}')
+
+            else:
+                try:
+                    send_message(client_socket, create_client_message('message'))
+                except Exception as err:
+                    print('Что-то пошло не так. Попробуйте подключиться к серверу еще раз.')
+                    log.error(f'Ошибка при попытке отправить сообщение. {err}')
 
 
 if __name__ == '__main__':

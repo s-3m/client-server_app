@@ -66,7 +66,7 @@ def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((listen_address, listen_port))
-        server_socket.settimeout(30)
+        server_socket.settimeout(1)
         server_socket.listen()
 
         client_list = []
