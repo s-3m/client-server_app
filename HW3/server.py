@@ -13,16 +13,18 @@ log = logging.getLogger('server')
 
 
 @log_
-def create_server_message(message, message_list, client):
-    log.info('Обращение к функции "create_server_message"')
+def create_server_message(message, message_list, client_names, client):
     if "action" in message and message["action"] == "presence" and "time" in message \
             and "user" in message and message["user"]["account_name"] != '':
         send_message(client, {"response": 200, "status": "OK"})
         return
 
     elif "action" in message and message["action"] == "message" and "time" in message \
-            and "user" in message and "text" in message:
-        message_list.append((message['user']['account_name'], message['text']))
+            and "sender" in message and "text" in message:
+        message_list.append((message['sender'], message['text']))
+        client_names['name'] = message['sender']
+        client_names['socket'] = client
+
         log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["user"]["account_name"]}')
         return
 
@@ -71,6 +73,7 @@ def main():
 
         client_list = []
         messages = []
+        client_names = {}
 
         while True:
             # log.info(f'Server listens...IP: {listen_address} on {listen_port} port')
@@ -97,7 +100,7 @@ def main():
             if recv_data_lst:
                 for i in recv_data_lst:
                     try:
-                        create_server_message(get_message(i), messages, i)
+                        create_server_message(get_message(i), messages, client_names, i)
                     except:
                         log.info(f'Потеряно соединение с клиентом {i.getpeername()}')
                         client_list.remove(i)

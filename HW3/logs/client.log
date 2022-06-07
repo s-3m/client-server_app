@@ -312,3 +312,5 @@
 2022-06-06 10:56:39,528 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=312, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61525), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
 2022-06-06 10:56:39,528 - INFO - log_decorator - Обращение к функции process_answer с аргументами: ({'action': 'message', 'sender': 'Guest', 'time': 1654502199.5220726, 'text': 'my name is re'},), {} ||| Вызывающая функия - "main()"
 2022-06-06 10:56:39,528 - INFO - log_decorator - Обращение к функции get_message с аргументами: (<socket.socket fd=332, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61526), raddr=('127.0.0.1', 7777)>,), {} ||| Вызывающая функия - "main()"
+2022-06-07 15:46:40,952 - INFO - client_read - Процесс соединения с сервером запущен.
+2022-06-07 15:47:03,505 - WARNING - client_read - Параметры не переданы. Использованы параметры по умолчанию - IP: 127.0.0.1; PORT: 7777; MODE: send
