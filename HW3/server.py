@@ -13,24 +13,43 @@ log = logging.getLogger('server')
 
 
 @log_
-def create_server_message(message, message_list, client_names, client):
+def create_server_message(message, message_list, client_names, client_list, client_sock):
     if "action" in message and message["action"] == "presence" and "time" in message \
-            and "user" in message and message["user"]["account_name"] != '':
-        send_message(client, {"response": 200, "status": "OK"})
+            and "user" in message:
+        if message['user']['account_name'] not in client_names.keys():
+            client_names[message['user']['account_name']] = client_sock
+            send_message(client_sock, {"response": 200, "status": "OK"})
+        else:
+            send_message(client_sock, {'response': 400, 'error': 'Имя пользователя уже занято'})
+            client_list.remove(client_sock)
+            client_sock.close()
+            log.info('Пользователь указал используемое имя')
         return
 
     elif "action" in message and message["action"] == "message" and "time" in message \
             and "sender" in message and "text" in message:
-        message_list.append((message['sender'], message['text']))
-        client_names['name'] = message['sender']
-        client_names['socket'] = client
-
+        message_list.append(message)
         log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["user"]["account_name"]}')
         return
 
     else:
-        send_message(client, {"response": 400, "error": "Bad Request"})
+        send_message(client_sock, {"response": 400, "error": "Bad Request"})
         return
+
+
+@log_
+def send_to_user(message, client_names, send_data_lst, recv):
+    client_socket = client_names[message['destination']]
+    print('-'*50)
+    print(send_data_lst)
+    print(client_socket)
+    print('-' * 50)
+    if message['destination'] in client_names.keys() and client_socket in send_data_lst:
+        send_message(client_socket, message)
+    elif message['destination'] in client_names and client_socket not in send_data_lst:
+        raise ConnectionError
+    else:
+        log.error(f'Отправка невозможна. Пользователь с именем {message["destination"]} не зарегистрирован.')
 
 
 def main():
@@ -73,16 +92,14 @@ def main():
 
         client_list = []
         messages = []
-        client_names = {}
+        client_names = dict()
 
         while True:
-            # log.info(f'Server listens...IP: {listen_address} on {listen_port} port')
             try:
                 client_socket, address = server_socket.accept()
-            except OSError as error:
-                if error.errno == None:
-                    print(f'I`am listen...IP: {listen_address} on {listen_port} port')
+            except OSError:
                 pass
+                    # print(f'I`am listen...IP: {listen_address} on {listen_port} port')
             else:
                 client_list.append(client_socket)
                 log.info(f'установлено соединение с {address}')
@@ -100,40 +117,19 @@ def main():
             if recv_data_lst:
                 for i in recv_data_lst:
                     try:
-                        create_server_message(get_message(i), messages, client_names, i)
+                        create_server_message(get_message(i), messages, client_names, client_list, i)
                     except:
                         log.info(f'Потеряно соединение с клиентом {i.getpeername()}')
                         client_list.remove(i)
 
-            if messages and send_data_lst:
-                message = {
-                    'action': 'message',
-                    'sender': messages[0][0],
-                    'time': time.time(),
-                    'text': messages[0][1]
-                }
-                del messages[0]
-
-                for i in send_data_lst:
-                    try:
-                        send_message(i, message)
-                    except:
-                        log.info(f'Потеряно соединение с клиентом {i.getpeername()}')
-                        i.close()
-                        client_list.remove(i)
-
-            # try:
-            #     message_from_client = get_message(client_socket)
-            #     log.info(f'Получено сообщение "{message_from_client["action"]}" '
-            #              f'от {message_from_client["user"]["account_name"]}')
-            #     response = create_server_message(message_from_client)
-            #     log.info(f'Сформирован ответ. Статус - {response["response"]}')
-            #     send_message(client_socket, response)
-            #     log.info('Сообщение успешно отправлено клиенту')
-            # except(ValueError, json.JSONDecodeError):
-            #     print('Ошибка! Неправильный формат сообщеня.')
-            #     log.critical('Ошибка! Неправильный формат сообщеня.')
-            #     sys.exit(1)
+            for i in messages:
+                try:
+                    send_to_user(i, client_names, send_data_lst)
+                except Exception:
+                    log.info(f'Не удалось отправить сообщение. Связь с клиентом {i["destination"]} была потеряна.')
+                    client_list.remove(client_names[i['destination']])
+                    del client_names[i['destination']]
+            messages.clear()
 
 
 if __name__ == '__main__':

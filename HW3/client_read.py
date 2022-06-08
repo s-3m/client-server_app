@@ -11,13 +11,12 @@ log = logging.getLogger('client')
 
 
 @log_
-def create_presence_message(action):
-    if action == 'presence':
-        msg = {"action": action,
+def create_presence_message(my_name):
+        msg = {"action": 'presence',
                "time": time.time(),
-               "user": {"account_name": "Guest"}
+               "user": {"account_name": my_name}
                }
-        log.info(f'Пользователем "{msg["user"]["account_name"]}" Создано клиентское сообщение типа "{action}".')
+        log.info(f'Пользователем "{msg["user"]["account_name"]}" Создано клиентское сообщение типа "presence".')
         return msg
 
 
@@ -26,7 +25,6 @@ def create_user_message(socket, my_name):
     help_msg = '1 - отправить сообщение\n2 - список команд\n3 - завершить соединение'
     print(help_msg)
     while True:
-
         while True:
             command = input('Введите команду: ')
             if command in ('1', '2', '3'):
@@ -80,8 +78,8 @@ def get_message_from_user(socket, my_name):
         try:
             message = get_message(socket)
             if 'action' in message and message['action'] == 'message' and 'sender' in message and \
-                    'text' in message and 'sender' in message and message['destination'] == my_name:
-                print(f'{message["sender"]}: {message["text"]}')
+                    'text' in message and message['destination'] == my_name:
+                print(f'\n{message["sender"]}: {message["text"]}')
                 log.info(f'Получено сообщение от пользователя {message["sender"]}')
             else:
                 log.error(f'Формат полученного сообщения некорректный - {message}')
@@ -119,7 +117,7 @@ def main():
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         client_socket.connect((server_address, server_port))
-        send_message(client_socket, create_presence_message('presence'))
+        send_message(client_socket, create_presence_message(my_name))
         log.info('Сообщение на сервер отправлено.')
         try:
             answer_from_server = answer_to_connect(get_message(client_socket))
@@ -129,19 +127,21 @@ def main():
             log.error('Не удалось разобрать сообщение от сервера. Ключ "Response" отсутствует в ответе сервера.')
             sys.exit(1)
 
-        read_thread = threading.Thread(target=get_message_from_user, args=(client_socket, my_name))
-        read_thread.daemon = True
-        read_thread.start()
-        send_thread = threading.Thread(target=create_user_message, args=(client_socket, my_name))
-        send_thread.daemon = True
-        send_thread.start()
-        log.info('Процессы на чтение и отправку сообщений запущены')
+        else:
+            read_thread = threading.Thread(target=get_message_from_user, args=(client_socket, my_name))
+            read_thread.daemon = True
+            read_thread.start()
 
-        while True:
-            time.sleep(1)
-            if read_thread.is_alive() and send_thread.is_alive():
-                continue
-            break
+            send_thread = threading.Thread(target=create_user_message, args=(client_socket, my_name))
+            send_thread.daemon = True
+            send_thread.start()
+            log.info('Процессы на чтение и отправку сообщений запущены')
+
+            while True:
+                time.sleep(1)
+                if read_thread.is_alive() and send_thread.is_alive():
+                    continue
+                break
 
 
 if __name__ == '__main__':
