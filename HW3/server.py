@@ -27,9 +27,15 @@ def create_server_message(message, message_list, client_names, client_list, clie
         return
 
     elif "action" in message and message["action"] == "message" and "time" in message \
-            and "sender" in message and "text" in message:
+            and "sender" in message and "text" in message and message['destination'] not in client_names:
+        client_sock = client_names[message['sender']]
+        send_message(client_sock, {"response": 400, "error": "Такой пользователь не зарегистрирован"})
+        return
+
+    elif "action" in message and message["action"] == "message" and "time" in message \
+            and "sender" in message and "text" in message and client_names[message['destination']] in client_list:
         message_list.append(message)
-        log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["user"]["account_name"]}')
+        log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["sender"]}')
         return
 
     else:
@@ -38,12 +44,8 @@ def create_server_message(message, message_list, client_names, client_list, clie
 
 
 @log_
-def send_to_user(message, client_names, send_data_lst, recv):
+def send_to_user(message, client_names, send_data_lst):
     client_socket = client_names[message['destination']]
-    print('-'*50)
-    print(send_data_lst)
-    print(client_socket)
-    print('-' * 50)
     if message['destination'] in client_names.keys() and client_socket in send_data_lst:
         send_message(client_socket, message)
     elif message['destination'] in client_names and client_socket not in send_data_lst:
@@ -125,6 +127,11 @@ def main():
             for i in messages:
                 try:
                     send_to_user(i, client_names, send_data_lst)
+
+                except KeyError:
+                    log.warning(f'Пользователь указал не зарегистрированного пользователя "{i["destination"]}"')
+                    create_server_message(i, messages, client_names, client_list, None)
+
                 except Exception:
                     log.info(f'Не удалось отправить сообщение. Связь с клиентом {i["destination"]} была потеряна.')
                     client_list.remove(client_names[i['destination']])

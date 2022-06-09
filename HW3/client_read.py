@@ -81,6 +81,8 @@ def get_message_from_user(socket, my_name):
                     'text' in message and message['destination'] == my_name:
                 print(f'\n{message["sender"]}: {message["text"]}')
                 log.info(f'Получено сообщение от пользователя {message["sender"]}')
+            elif 'response' in message and 'error' in message:
+                print(f'\n{message["error"]}')
             else:
                 log.error(f'Формат полученного сообщения некорректный - {message}')
         except (OSError, ConnectionError, ConnectionAbortedError, ConnectionResetError) as err:
