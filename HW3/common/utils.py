@@ -1,4 +1,6 @@
 import json
+import sys
+sys.path.append('../')
 from log_decorator import log_
 
 

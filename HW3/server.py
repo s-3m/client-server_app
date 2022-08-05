@@ -1,9 +1,7 @@
-import json
+import argparse
 import select
 import socket
 import sys
-import time
-
 from common.utils import send_message, get_message
 import logging
 from log_decorator import log_
@@ -13,97 +11,50 @@ log = logging.getLogger('server')
 
 
 @log_
-def create_server_message(message, message_list, client_names, client_list, client_sock):
-    if "action" in message and message["action"] == "presence" and "time" in message \
-            and "user" in message:
-        if message['user']['account_name'] not in client_names.keys():
-            client_names[message['user']['account_name']] = client_sock
-            send_message(client_sock, {"response": 200, "status": "OK"})
-        else:
-            send_message(client_sock, {'response': 400, 'error': 'Имя пользователя уже занято'})
-            client_list.remove(client_sock)
-            client_sock.close()
-            log.info('Пользователь указал используемое имя')
-        return
-
-    elif "action" in message and message["action"] == "message" and "time" in message \
-            and "sender" in message and "text" in message and message['destination'] not in client_names:
-        client_sock = client_names[message['sender']]
-        send_message(client_sock, {"response": 400, "error": "Такой пользователь не зарегистрирован"})
-        return
-
-    elif "action" in message and message["action"] == "message" and "time" in message \
-            and "sender" in message and "text" in message and client_names[message['destination']] in client_list:
-        message_list.append(message)
-        log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["sender"]}')
-        return
-
-    else:
-        send_message(client_sock, {"response": 400, "error": "Bad Request"})
-        return
+def arg_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', default=7777, type=int, nargs='?')
+    parser.add_argument('-a', default='', nargs='?')
+    namespace = parser.parse_args(sys.argv[1:])
+    listen_address = namespace.a
+    listen_port = namespace.p
+    return listen_address, listen_port
 
 
-@log_
-def send_to_user(message, client_names, send_data_lst):
-    client_socket = client_names[message['destination']]
-    if message['destination'] in client_names.keys() and client_socket in send_data_lst:
-        send_message(client_socket, message)
-    elif message['destination'] in client_names and client_socket not in send_data_lst:
-        raise ConnectionError
-    else:
-        log.error(f'Отправка невозможна. Пользователь с именем {message["destination"]} не зарегистрирован.')
+class Server:
+    def __init__(self, listen_adress, listen_port):
+        self.sock = None
+        self.addr = listen_adress
+        self.port = listen_port
 
+        self.clients = []
+        self.messages = []
+        self.names = dict()
 
-def main():
-    # Получаем номер порта из командной строки или назначаем свой.
-    # log.info('Старт сервера.')
-    try:
-        if '-p' in sys.argv:
-            listen_port = int(sys.argv[sys.argv.index('-p') + 1])
-        else:
-            listen_port = 7777
-        if 65535 < listen_port or listen_port < 1024:
-            raise ValueError
-        # log.info(f'Сервер слушает порт - {listen_port}')
-    except IndexError:
-        print('Не указан номер порта!')
-        log.critical('Не передан параметр номера порта "-p"')
-        sys.exit(1)
-    except ValueError:
-        print('Номер порта должен быть в пределах от 1024 до 65535.')
-        log.error(f'Указан недопустимый номер порта - {listen_port}')
-        sys.exit(1)
+    def init_socket(self):
+        log.info(
+            f'Запущен сервер, порт для подключений: {self.port}, '
+            f'адрес с которого принимаются подключения: {self.addr}. '
+            f'Если адрес не указан, принимаются соединения с любых адресов.')
 
-    # Получаем ip-adress из параметров строки или назначаем свой
-    try:
-        if '-a' in sys.argv:
-            listen_address = sys.argv[sys.argv.index('-a') + 1]
-        else:
-            listen_address = ''
-        # log.info(f'Сервер слушает - {listen_address}')
-    except IndexError:
-        print('После команды "-a" необходимо указать IP-adress')
-        log.critical('Не передан параметр IP "-a"')
-        sys.exit(1)
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.bind((self.addr, self.port))
+        server_socket.settimeout(0.5)
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server_socket.bind((listen_address, listen_port))
-        server_socket.settimeout(1)
-        server_socket.listen()
+        self.sock = server_socket
+        self.sock.listen()
+        print('Сервер запущен!')
 
-        client_list = []
-        messages = []
-        client_names = dict()
+    def main_loop(self):
+        self.init_socket()
 
         while True:
             try:
-                client_socket, address = server_socket.accept()
+                client_socket, address = self.sock.accept()
             except OSError:
                 pass
-                    # print(f'I`am listen...IP: {listen_address} on {listen_port} port')
             else:
-                client_list.append(client_socket)
+                self.clients.append(client_socket)
                 log.info(f'установлено соединение с {address}')
 
             recv_data_lst = []
@@ -111,32 +62,81 @@ def main():
             err_lst = []
 
             try:
-                if client_list:
-                    recv_data_lst, send_data_lst, err_lst = select.select(client_list, client_list, err_lst, 0)
+                if self.clients:
+                    recv_data_lst, send_data_lst, err_lst = select.select(self.clients, self.clients, err_lst, 0)
             except OSError:
                 pass
 
             if recv_data_lst:
                 for i in recv_data_lst:
                     try:
-                        create_server_message(get_message(i), messages, client_names, client_list, i)
+                        self.create_server_message(get_message(i), i)
                     except:
                         log.info(f'Потеряно соединение с клиентом {i.getpeername()}')
-                        client_list.remove(i)
+                        self.clients.remove(i)
 
-            for i in messages:
+            for message in self.messages:
                 try:
-                    send_to_user(i, client_names, send_data_lst)
-
+                    self.send_to_user(message, send_data_lst)
                 except KeyError:
-                    log.warning(f'Пользователь указал не зарегистрированного пользователя "{i["destination"]}"')
-                    create_server_message(i, messages, client_names, client_list, None)
-
+                    log.warning(f'Пользователь указал не зарегистрированного пользователя "{message["destination"]}"')
+                    self.create_server_message(message, None)
                 except Exception:
-                    log.info(f'Не удалось отправить сообщение. Связь с клиентом {i["destination"]} была потеряна.')
-                    client_list.remove(client_names[i['destination']])
-                    del client_names[i['destination']]
-            messages.clear()
+                    log.info(f'Не удалось отправить сообщение. Связь с клиентом {message["destination"]} была потеряна.')
+                    self.clients.remove(self.names[message['destination']])
+                    del self.names[message['destination']]
+            self.messages.clear()
+
+    @log_
+    def send_to_user(self, message, send_data_lst):
+        if message['destination'] in self.names and self.names[message['destination']] in send_data_lst:
+            send_message(self.names[message['destination']], message)
+        elif message['destination'] in self.names and self.names[message['destination']] not in send_data_lst:
+            raise ConnectionError
+        else:
+            log.error(f'Отправка невозможна. Пользователь с именем {message["destination"]} не зарегистрирован.')
+
+
+    @log_
+    def create_server_message(self, message, client):
+        if "action" in message and message["action"] == "presence" and "time" in message \
+                and "user" in message:
+            if message['user']['account_name'] not in self.names.keys():
+                self.names[message['user']['account_name']] = client
+                send_message(client, {"response": 200, "status": "OK"})
+            else:
+                send_message(client, {'response': 400, 'error': 'Имя пользователя уже занято'})
+                self.clients.remove(client)
+                client.close()
+                log.info('Пользователь указал используемое имя')
+            return
+
+        elif "action" in message and message["action"] == "message" and "time" in message \
+                and "sender" in message and "text" in message and message['destination'] not in self.names:
+            client_sock = self.names[message['sender']]
+            send_message(client_sock, {"response": 400, "error": "Такой пользователь не зарегистрирован"})
+            return
+
+        elif "action" in message and message["action"] == "message" and "time" in message \
+                and "sender" in message and "text" in message and self.names[message['destination']] in self.clients:
+            self.messages.append(message)
+            log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["sender"]}')
+            return
+        elif 'action' in message and message['action'] == 'exit' and 'account_name' in message:
+            self.clients.remove(self.names['account_name'])
+            self.names['account_name'].close()
+            del self.names['account_name']
+            return
+
+        else:
+            send_message(client, {"response": 400, "error": "Bad Request"})
+            return
+
+
+def main():
+    listen_address, listen_port = arg_parser()
+    server = Server(listen_address, listen_port)
+    server.main_loop()
 
 
 if __name__ == '__main__':
