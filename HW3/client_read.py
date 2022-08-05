@@ -1,3 +1,4 @@
+import argparse
 import socket
 import sys
 import threading
@@ -10,53 +11,96 @@ from logs import client_log_config
 log = logging.getLogger('client')
 
 
+class ClientSender(threading.Thread):
+    def __init__(self, account_name, sock):
+        super().__init__()
+        self.account_name = account_name
+        self.sock = sock
+
+    @log_
+    def create_user_message(self):
+        to_user = input('Введите получателя: ')
+        msg_text = input('Введите текст: ')
+        msg = {
+            'action': 'message',
+            'time': time.time(),
+            'sender': self.account_name,
+            'destination': to_user,
+            'text': msg_text
+        }
+        log.info(f'Создан словарь сообщения - {msg}')
+
+        try:
+            send_message(self.sock, msg)
+            log.info(f'Сообщение отправлено пользователю {to_user}')
+        except Exception as err:
+            print(err)
+            log.critical('Соединение с сервером потеряно')
+            sys.exit(1)
+
+    def create_exit_msg(self):
+        return {
+            'action': 'exit',
+            'time': time.time(),
+            'account_name': self.account_name
+        }
+
+    def run(self):
+        help_msg = '1 - отправить сообщение\n2 - список команд\n3 - завершить соединение'
+        print(help_msg)
+        while True:
+            while True:
+                command = input('Введите команду: ')
+                if command in ('1', '2', '3'):
+                    break
+                print('Команда указана неверно. Повторите попытку.')
+
+            if command == '1':
+                self.create_user_message()
+            elif command == '2':
+                print(help_msg)
+            else:
+                try:
+                    send_message(self.sock, self.create_exit_msg())
+                except:
+                    pass
+                print('Соединение завершено')
+                log.info('Пользователь завершил соединение')
+                break
+
+class ClientReader(threading.Thread):
+    def __init__(self, account_name, sock):
+        super().__init__()
+        self.account_name = account_name
+        self.sock = sock
+
+    def run(self):
+        while True:
+            try:
+                message = get_message(self.sock)
+                if 'action' in message and message['action'] == 'message' and 'sender' in message and \
+                        'text' in message and message['destination'] == self.account_name:
+                    print(f'\n{message["sender"]}: {message["text"]}')
+                    log.info(f'Получено сообщение от пользователя {message["sender"]}')
+                elif 'response' in message and 'error' in message:
+                    print(f'\n{message["error"]}')
+                else:
+                    log.error(f'Формат полученного сообщения некорректный - {message}')
+            except (OSError, ConnectionError, ConnectionAbortedError, ConnectionResetError) as err:
+                log.critical(f'Потеряно соединение с сервером - {err}')
+                break
+            except (Exception, BaseException) as err:
+                log.error(f'Не удалось распознать полученное сообщение - {err}')
+
+
 @log_
 def create_presence_message(my_name):
-        msg = {"action": 'presence',
-               "time": time.time(),
-               "user": {"account_name": my_name}
-               }
-        log.info(f'Пользователем "{msg["user"]["account_name"]}" Создано клиентское сообщение типа "presence".')
-        return msg
-
-
-@log_
-def create_user_message(socket, my_name):
-    help_msg = '1 - отправить сообщение\n2 - список команд\n3 - завершить соединение'
-    print(help_msg)
-    while True:
-        while True:
-            command = input('Введите команду: ')
-            if command in ('1', '2', '3'):
-                break
-            print('Команда указана неверно. Повторите попытку.')
-
-        if command == '1':
-            to_user = input('Введите получателя: ')
-            msg_text = input('Введите текст: ')
-            msg = {
-                'action': 'message',
-                'time': time.time(),
-                'sender': my_name,
-                'destination': to_user,
-                'text': msg_text
-            }
-            log.info(f'Создан словарь сообщения - {msg}')
-
-            try:
-                send_message(socket, msg)
-                log.info(f'Сообщение отправлено пользователю {to_user}')
-            except Exception as err:
-                print(err)
-                log.critical('Соединение с сервером потеряно')
-                sys.exit(1)
-
-        elif command == '2':
-            print(help_msg)
-        else:
-            print('Соединение завершено')
-            log.info('Пользователь завершил соединение')
-            break
+    msg = {"action": 'presence',
+           "time": time.time(),
+           "user": {"account_name": my_name}
+           }
+    log.info(f'Пользователем "{msg["user"]["account_name"]}" Создано клиентское сообщение типа "presence".')
+    return msg
 
 
 @log_
@@ -73,23 +117,22 @@ def answer_to_connect(answer):
 
 
 @log_
-def get_message_from_user(socket, my_name):
-    while True:
-        try:
-            message = get_message(socket)
-            if 'action' in message and message['action'] == 'message' and 'sender' in message and \
-                    'text' in message and message['destination'] == my_name:
-                print(f'\n{message["sender"]}: {message["text"]}')
-                log.info(f'Получено сообщение от пользователя {message["sender"]}')
-            elif 'response' in message and 'error' in message:
-                print(f'\n{message["error"]}')
-            else:
-                log.error(f'Формат полученного сообщения некорректный - {message}')
-        except (OSError, ConnectionError, ConnectionAbortedError, ConnectionResetError) as err:
-            log.critical(f'Потеряно соединение с сервером - {err}')
-            break
-        except (Exception, BaseException) as err:
-            log.error(f'Не удалось распознать полученное сообщение - {err}')
+def arg_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('addr', default='127.0.0.1', nargs='?')
+    parser.add_argument('port', default='7777', type=int, nargs='?')
+    parser.add_argument('-n', '--name', default=None, nargs='?')
+    namespace = parser.parse_args(sys.argv[1:])
+    server_address = namespace.addr
+    server_port = namespace.port
+    client_name = namespace.name
+
+    if not 1023 < server_port < 65536:
+        log.critical(
+            f'Попытка запуска клиента с неподходящим номером порта: {server_port}. Допустимы адреса с 1024 до 65535. Клиент завершается.')
+        exit(1)
+
+    return server_address, server_port, client_name
 
 
 def main():

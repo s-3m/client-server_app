@@ -2,7 +2,7 @@ import sys
 import unittest
 from unittest import TestCase
 sys.path.append('..')
-from client import create_client_message, process_answer
+from client_read import create_client_message, process_answer
 
 
 class TestClientSide(TestCase):
