@@ -1,4 +1,5 @@
 import argparse
+import json
 import socket
 import sys
 import threading
@@ -68,6 +69,7 @@ class ClientSender(threading.Thread):
                 log.info('Пользователь завершил соединение')
                 break
 
+
 class ClientReader(threading.Thread):
     def __init__(self, account_name, sock):
         super().__init__()
@@ -120,7 +122,7 @@ def answer_to_connect(answer):
 def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('addr', default='127.0.0.1', nargs='?')
-    parser.add_argument('port', default='7777', type=int, nargs='?')
+    parser.add_argument('port', default=7777, type=int, nargs='?')
     parser.add_argument('-n', '--name', default=None, nargs='?')
     namespace = parser.parse_args(sys.argv[1:])
     server_address = namespace.addr
@@ -136,34 +138,21 @@ def arg_parser():
 
 
 def main():
-    log.info('Процесс соединения с сервером запущен.')
-    my_name = ''
-    try:
-        server_address = sys.argv[1]
-        server_port = int(sys.argv[2])
-        my_name = sys.argv[3]
-        if server_port > 65535 or server_port < 1024:
-            raise ValueError
-    except IndexError:
-        server_address = '127.0.0.1'
-        server_port = 7777
-        if not my_name:
-            while True:
-                my_name = input('Пожалуйста, введите ваше имя пользователя: ')
-                if my_name.strip() != '':
-                    break
-                else:
-                    print(f'Поле не должно быть пустым')
-        log.warning(f'Параметры не переданы. Использованы параметры по умолчанию - '
-                    f'IP: {server_address}; PORT: {server_port}')
-    except ValueError:
-        log.error(f'Указан недопустимый порт - {server_port}')
-        sys.exit(1)
+    log.info('Клиентский модуль. Процесс соединения с сервером запущен.')
+
+    server_address, server_port, client_name = arg_parser()
+
+    if not client_name:
+        client_name = input('Пожалуйста введите имя пользователя: ')
+    else:
+        print(f'Здравствуйте {client_name}. Добро пожаловать')
+
+    log.info(f'Соединение запущено клиентом {client_name}. IP: {server_address}; PORT: {server_port}')
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         client_socket.connect((server_address, server_port))
-        send_message(client_socket, create_presence_message(my_name))
-        log.info('Сообщение на сервер отправлено.')
+        send_message(client_socket, create_presence_message(client_name))
+        log.info('Приветственное сообщение на сервер отправлено.')
         try:
             answer_from_server = answer_to_connect(get_message(client_socket))
             print(answer_from_server)
@@ -171,20 +160,25 @@ def main():
         except ValueError:
             log.error('Не удалось разобрать сообщение от сервера. Ключ "Response" отсутствует в ответе сервера.')
             sys.exit(1)
+        except (ConnectionRefusedError, ConnectionError):
+            log.critical(
+                f'Не удалось подключиться к серверу {server_address}:{server_port}, '
+                f'конечный компьютер отверг запрос на подключение.')
+            exit(1)
 
         else:
-            read_thread = threading.Thread(target=get_message_from_user, args=(client_socket, my_name))
-            read_thread.daemon = True
-            read_thread.start()
+            module_receiver = ClientReader(client_name, client_socket)
+            module_receiver.daemon = True
+            module_receiver.start()
 
-            send_thread = threading.Thread(target=create_user_message, args=(client_socket, my_name))
-            send_thread.daemon = True
-            send_thread.start()
+            module_sender = ClientSender(client_name, client_socket)
+            module_sender.daemon = True
+            module_sender.start()
             log.info('Процессы на чтение и отправку сообщений запущены')
 
             while True:
                 time.sleep(1)
-                if read_thread.is_alive() and send_thread.is_alive():
+                if module_receiver.is_alive() and module_sender.is_alive():
                     continue
                 break
 
