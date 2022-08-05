@@ -1,9 +1,6 @@
 import json
 import sys
-from pprint import pprint
-
-pprint(sys.path)
-sys.path.append('..')
+sys.path.append('../')
 from log_decorator import log_
 
 

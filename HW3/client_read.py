@@ -1,5 +1,4 @@
 import argparse
-import json
 import socket
 import sys
 import threading
@@ -60,14 +59,15 @@ class ClientSender(threading.Thread):
                 self.create_user_message()
             elif command == '2':
                 print(help_msg)
-            else:
+            elif command == '3':
                 try:
                     send_message(self.sock, self.create_exit_msg())
+                    print('Соединение завершено!')
+                    log.info('Соединение завершено по инициативе пользователяю')
+                    time.sleep(0.5)
+                    break
                 except:
                     pass
-                print('Соединение завершено')
-                log.info('Пользователь завершил соединение')
-                break
 
 
 class ClientReader(threading.Thread):

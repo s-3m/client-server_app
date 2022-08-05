@@ -1,10 +1,7 @@
 import argparse
-import json
 import select
 import socket
 import sys
-import time
-
 from common.utils import send_message, get_message
 import logging
 from log_decorator import log_
@@ -46,6 +43,7 @@ class Server:
 
         self.sock = server_socket
         self.sock.listen()
+        print('Сервер запущен!')
 
     def main_loop(self):
         self.init_socket()
