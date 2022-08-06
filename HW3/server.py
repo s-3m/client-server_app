@@ -2,6 +2,7 @@ import argparse
 import select
 import socket
 import sys
+from common.meta_classes import ServerVerifier
 from common.utils import send_message, get_message
 import logging
 from log_decorator import log_
@@ -21,10 +22,10 @@ def arg_parser():
     return listen_address, listen_port
 
 
-class Server:
-    def __init__(self, listen_adress, listen_port):
+class Server(metaclass=ServerVerifier):
+    def __init__(self, listen_address, listen_port):
         self.sock = None
-        self.addr = listen_adress
+        self.addr = listen_address
         self.port = listen_port
 
         self.clients = []
