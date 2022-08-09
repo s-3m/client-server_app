@@ -2,10 +2,11 @@ import argparse
 import select
 import socket
 import sys
+from common.meta_classes import ServerVerifier
 from common.utils import send_message, get_message
 import logging
 from log_decorator import log_
-from logs import server_log_config
+from common.descriptors import ServerPortChecker
 
 log = logging.getLogger('server')
 
@@ -13,7 +14,7 @@ log = logging.getLogger('server')
 @log_
 def arg_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', default=7777, type=int, nargs='?')
+    parser.add_argument('-p', default=7777, nargs='?')
     parser.add_argument('-a', default='', nargs='?')
     namespace = parser.parse_args(sys.argv[1:])
     listen_address = namespace.a
@@ -21,11 +22,14 @@ def arg_parser():
     return listen_address, listen_port
 
 
-class Server:
-    def __init__(self, listen_adress, listen_port):
+class Server(metaclass=ServerVerifier):
+    port = ServerPortChecker()
+
+    def __init__(self, listen_address, listen_port):
         self.sock = None
-        self.addr = listen_adress
+        self.addr = listen_address
         self.port = listen_port
+        print(self.port)
 
         self.clients = []
         self.messages = []
@@ -82,7 +86,8 @@ class Server:
                     log.warning(f'Пользователь указал не зарегистрированного пользователя "{message["destination"]}"')
                     self.create_server_message(message, None)
                 except Exception:
-                    log.info(f'Не удалось отправить сообщение. Связь с клиентом {message["destination"]} была потеряна.')
+                    log.info(
+                        f'Не удалось отправить сообщение. Связь с клиентом {message["destination"]} была потеряна.')
                     self.clients.remove(self.names[message['destination']])
                     del self.names[message['destination']]
             self.messages.clear()
@@ -95,7 +100,6 @@ class Server:
             raise ConnectionError
         else:
             log.error(f'Отправка невозможна. Пользователь с именем {message["destination"]} не зарегистрирован.')
-
 
     @log_
     def create_server_message(self, message, client):

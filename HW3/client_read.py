@@ -6,12 +6,13 @@ import time
 from common.utils import send_message, get_message
 import logging
 from log_decorator import log_
+from common.meta_classes import ClientVerifier
 from logs import client_log_config
 
 log = logging.getLogger('client')
 
 
-class ClientSender(threading.Thread):
+class ClientSender(threading.Thread, metaclass=ClientVerifier):
     def __init__(self, account_name, sock):
         super().__init__()
         self.account_name = account_name
@@ -70,7 +71,7 @@ class ClientSender(threading.Thread):
                     pass
 
 
-class ClientReader(threading.Thread):
+class ClientReader(threading.Thread, metaclass=ClientVerifier):
     def __init__(self, account_name, sock):
         super().__init__()
         self.account_name = account_name
