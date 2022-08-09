@@ -7,6 +7,8 @@ from common.utils import send_message, get_message
 import logging
 from log_decorator import log_
 from common.descriptors import ServerPortChecker
+from database.server_db import ServerDB
+import threading
 
 log = logging.getLogger('server')
 
@@ -22,14 +24,15 @@ def arg_parser():
     return listen_address, listen_port
 
 
-class Server(metaclass=ServerVerifier):
+class Server(threading.Thread, metaclass=ServerVerifier):
     port = ServerPortChecker()
 
-    def __init__(self, listen_address, listen_port):
+    def __init__(self, listen_address, listen_port, server_db):
+        super().__init__()
         self.sock = None
+        self.server_db = server_db
         self.addr = listen_address
         self.port = listen_port
-        print(self.port)
 
         self.clients = []
         self.messages = []
@@ -49,7 +52,7 @@ class Server(metaclass=ServerVerifier):
         self.sock.listen()
         print('Сервер запущен!')
 
-    def main_loop(self):
+    def run(self):
         self.init_socket()
 
         while True:
@@ -108,6 +111,8 @@ class Server(metaclass=ServerVerifier):
             if message['user']['account_name'] not in self.names.keys():
                 self.names[message['user']['account_name']] = client
                 send_message(client, {"response": 200, "status": "OK"})
+                client_ip, client_port = client.getpeername()
+                self.server_db.user_login(message['user']['account_name'], client_ip, client_port)
             else:
                 send_message(client, {'response': 400, 'error': 'Имя пользователя уже занято'})
                 self.clients.remove(client)
@@ -130,6 +135,7 @@ class Server(metaclass=ServerVerifier):
             self.clients.remove(self.names['account_name'])
             self.names['account_name'].close()
             del self.names['account_name']
+            self.server_db.user_logout(self.names['account_name'])
             return
 
         else:
@@ -137,10 +143,46 @@ class Server(metaclass=ServerVerifier):
             return
 
 
+def print_help():
+    print('all - список всех зарегестрированных пользователей')
+    print('active - список активных пользователей')
+    print('login history - просмотр истории входа')
+    print('help - список доступных команд')
+
+
 def main():
     listen_address, listen_port = arg_parser()
-    server = Server(listen_address, listen_port)
-    server.main_loop()
+
+    server_db = ServerDB()
+
+    server = Server(listen_address, listen_port, server_db)
+    server.daemon = True
+    server.start()
+
+    print_help()
+
+    while True:
+        answer = input('Введите команду: ')
+        if answer == 'all':
+            for user in sorted(server_db.user_list()):
+                print(f'Пользователь "{user[0]}". Дата последнего входа - {user[1]}')
+        elif answer == 'active':
+            for user in sorted(server_db.active_users_list()):
+                print(f'Пользователь "{user[0]}". IP: {user[1]}; Port: {user[2]}; Дата последнего входа - {user[3]}')
+        elif answer == 'login history':
+            need_user = input('Введите имя пользователя либо оставьте поле пустым: ')
+            if need_user:
+                for user in server_db.login_history(need_user):
+                    print(
+                        f'Пользователь "{user[0]}". IP: {user[2]}; Port: {user[3]}; Дата последнего входа - {user[1]}')
+            else:
+                for user in server_db.login_history():
+                    print(
+                        f'Пользователь "{user[0]}". IP: {user[2]}; Port: {user[3]}; Дата последнего входа - {user[1]}')
+        elif answer == 'help':
+            print_help()
+        else:
+            print('Неверная команда!')
 
 
 if __name__ == '__main__':

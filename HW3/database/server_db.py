@@ -50,7 +50,7 @@ class ServerDB:
     def __init__(self):
         self.engine = create_engine('sqlite:///server_base.db3', echo=False, pool_recycle=7200)
 
-        self.Base.metadata.createall(self.engine)
+        self.Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
