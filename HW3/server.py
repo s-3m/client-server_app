@@ -2,6 +2,8 @@ import argparse
 import select
 import socket
 import sys
+from time import sleep
+
 from common.meta_classes import ServerVerifier
 from common.utils import send_message, get_message
 import logging
@@ -78,7 +80,8 @@ class Server(threading.Thread, metaclass=ServerVerifier):
                 for i in recv_data_lst:
                     try:
                         self.create_server_message(get_message(i), i)
-                    except:
+                    except(Exception) as err:
+                        print(err)
                         log.info(f'Потеряно соединение с клиентом {i.getpeername()}')
                         self.clients.remove(i)
 
@@ -132,10 +135,10 @@ class Server(threading.Thread, metaclass=ServerVerifier):
             log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["sender"]}')
             return
         elif 'action' in message and message['action'] == 'exit' and 'account_name' in message:
-            self.clients.remove(self.names['account_name'])
-            self.names['account_name'].close()
-            del self.names['account_name']
-            self.server_db.user_logout(self.names['account_name'])
+            self.server_db.user_logout(message['account_name'])
+            self.clients.remove(self.names[message['account_name']])
+            self.names[message['account_name']].close()
+            del self.names[message['account_name']]
             return
 
         else:
@@ -144,10 +147,14 @@ class Server(threading.Thread, metaclass=ServerVerifier):
 
 
 def print_help():
+    sleep(0.1)
+    print('-----------------------------------------------------------')
     print('all - список всех зарегестрированных пользователей')
     print('active - список активных пользователей')
     print('login history - просмотр истории входа')
     print('help - список доступных команд')
+    print('-----------------------------------------------------------')
+
 
 
 def main():

@@ -26,11 +26,11 @@ class ServerDB:
         port = Column(Integer)
         time_connection = Column(DateTime)
 
-        def __int__(self, user, ip, port, time_connection):
+        def __init__(self, user, ip, port, time_conn):
             self.user = user
-            self.port = port
             self.ip = ip
-            self.time_connection = time_connection
+            self.port = port
+            self.time_conn = time_conn
 
     class LoginHistory(Base):
         __tablename__ = 'login_history'
@@ -41,14 +41,14 @@ class ServerDB:
         port = Column(Integer)
         time_connection = Column(DateTime)
 
-        def __int__(self, user, ip, port, time_connection):
+        def __init__(self, user, ip, port, last_conn):
             self.user = user
-            self.port = port
             self.ip = ip
-            self.time_connection = time_connection
+            self.port = port
+            self.last_conn = last_conn
 
     def __init__(self):
-        self.engine = create_engine('sqlite:///server_base.db3', echo=False, pool_recycle=7200)
+        self.engine = create_engine('sqlite:///server_db.db3', echo=False, pool_recycle=7200)
 
         self.Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
@@ -58,8 +58,7 @@ class ServerDB:
         self.session.commit()
 
     def user_login(self, username, ip, port):
-        result = self.session.query(self.AllUsers).filter_by(login=username).first()
-
+        result = self.session.query(self.AllUsers).filter_by(login=username)
         if result.count():
             user = result.first()
             user.last_connection = datetime.datetime.now()
@@ -77,14 +76,14 @@ class ServerDB:
 
     def user_logout(self, username):
         user = self.session.query(self.AllUsers).filter_by(login=username).first()
-        self.session.query(self.AllUsers).filter_by(user=user.id).first().delete()
+        self.session.query(self.ActiveUsers).filter_by(user=user.id).delete()
 
         self.session.commit()
 
     def user_list(self):
         users = self.session.query(
             self.AllUsers.login,
-            self.AllUsers.last_connection
+            self.AllUsers.last_connection,
         )
         return users.all()
 
@@ -109,5 +108,10 @@ class ServerDB:
             res = res.filter(self.AllUsers.login == username)
         return res.all()
 
+
+if __name__ == '__main__':
+    db = ServerDB()
+    db.user_login('user1', '127.0.0.2', 7777)
+    db.user_login('user2', '127.0.0.3', 7777)
 
 
