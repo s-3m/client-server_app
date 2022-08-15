@@ -15,7 +15,7 @@ def send_message(client_socket, message):
 
 @log_
 def get_message(client_socket):
-    encoding_response = client_socket.recv(4096)
+    encoding_response = client_socket.recv(100000)
     if isinstance(encoding_response, bytes):
         json_response = encoding_response.decode('utf-8')
         if isinstance(json_response, str):

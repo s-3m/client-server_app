@@ -6,6 +6,46 @@ from PyQt5.QtCore import Qt
 import os
 
 
+def gui_create_model(database):
+    list_users = database.active_users_list()
+    list_table = QStandardItemModel()
+    list_table.setHorizontalHeaderLabels(['Имя Клиента', 'IP Адрес', 'Порт', 'Время подключения'])
+    for row in list_users:
+        user, ip, port, time = row
+        user = QStandardItem(user)
+        user.setEditable(False)
+        ip = QStandardItem(ip)
+        ip.setEditable(False)
+        port = QStandardItem(str(port))
+        port.setEditable(False)
+        # Уберём миллисекунды из строки времени, т.к. такая точность не требуется.
+        time = QStandardItem(str(time.replace(microsecond=0)))
+        time.setEditable(False)
+        list_table.appendRow([user, ip, port, time])
+    return list_table
+
+
+def create_stat_model(database):
+    # Список записей из базы
+    hist_list = database.message_history()
+
+    # Объект модели данных:
+    list_table = QStandardItemModel()
+    list_table.setHorizontalHeaderLabels(
+        ['Имя Клиента', 'Последний раз входил', 'Сообщений отправлено', 'Сообщений получено'])
+    for row in hist_list:
+        user, last_seen, sent, recvd = row
+        user = QStandardItem(user)
+        user.setEditable(False)
+        last_seen = QStandardItem(str(last_seen.replace(microsecond=0)))
+        last_seen.setEditable(False)
+        sent = QStandardItem(str(sent))
+        sent.setEditable(False)
+        recvd = QStandardItem(str(recvd))
+        recvd.setEditable(False)
+        list_table.appendRow([user, last_seen, sent, recvd])
+    return list_table
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
