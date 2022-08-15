@@ -3,11 +3,13 @@ import socket
 import sys
 import threading
 import time
+
+from Errors.my_err import ServerError
 from common.utils import send_message, get_message
 import logging
 from log_decorator import log_
 from common.meta_classes import ClientVerifier
-from logs import client_log_config
+from database.clients_db import ClientDB
 
 log = logging.getLogger('client')
 
@@ -138,6 +140,89 @@ def arg_parser():
     return server_address, server_port, client_name
 
 
+def add_contact(sock, username, contact):
+    log.debug(f'Создание контакта {contact}')
+    msg = {
+        'action': 'add_contact',
+        'time': time.time(),
+        'user': username,
+        'account_name': contact
+        }
+    send_message(sock, msg)
+    ans = get_message(sock)
+    if 'response' in ans and ans['response'] == 200:
+        pass
+    else:
+        raise ServerError('Ошибка создания контакта')
+    print('Удачное создание контакта.')
+
+
+def remove_contact(sock, username, contact):
+    log.debug(f'Создание контакта {contact}')
+    msg = {
+        'action': 'add_contact',
+        'time': time.time(),
+        'user': username,
+        'account_name': contact
+    }
+    send_message(sock, msg)
+    ans = get_message(sock)
+    if 'response' in ans and ans['response'] == 200:
+        pass
+    else:
+        raise ServerError('Ошибка удаления контакта')
+    print('Ошибка удаление контакта.')
+
+
+def contacts_list_request(sock, name):
+    log.debug(f'запрос списка контактов пользователя {name}')
+    msg = {
+        'action': 'get_contacts',
+        'time': time.time(),
+        'user': name
+    }
+    send_message(sock, msg)
+    ans = get_message(sock)
+    if 'response' in ans and ans['response'] == 202:
+        return ans['answer_list']
+    else:
+        raise ServerError('Неудалось получить список контактов')
+
+
+def user_list_request(sock, username):
+    log.debug(f'Запрос списка пользователей {username}')
+    msg = {
+        'action': 'users_request',
+        'time': time.time(),
+        'account_name': username
+    }
+    send_message(sock, msg)
+    ans = get_message(sock)
+    if 'response' in ans and ans['response'] == 202:
+        return ans['answer_list']
+    else:
+        raise ServerError('Не удалось получить список пользователей')
+
+
+def db_load(sock, db, username):
+    try:
+        users_list = user_list_request(sock, username)
+    except ServerError:
+        log.error('Ошибка запроса списка пользователей')
+        print('error - line145')
+    else:
+        db.add_users(users_list)
+
+    try:
+        contact_list = contacts_list_request(sock, username)
+    except ServerError:
+        log.error('Ошибка запроса списка контактов')
+    else:
+        for contact in contact_list:
+            db.add_contact(contact)
+
+
+
 def main():
     log.info('Клиентский модуль. Процесс соединения с сервером запущен.')
 
@@ -151,6 +236,7 @@ def main():
     log.info(f'Соединение запущено клиентом {client_name}. IP: {server_address}; PORT: {server_port}')
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+        client_socket.settimeout(1)
         client_socket.connect((server_address, server_port))
         send_message(client_socket, create_presence_message(client_name))
         log.info('Приветственное сообщение на сервер отправлено.')
@@ -168,6 +254,9 @@ def main():
             exit(1)
 
         else:
+            client_db = ClientDB(client_name)
+            db_load(client_socket, client_db, client_name)
+
             module_receiver = ClientReader(client_name, client_socket)
             module_receiver.daemon = True
             module_receiver.start()
