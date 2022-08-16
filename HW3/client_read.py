@@ -69,19 +69,16 @@ class ClientSender(threading.Thread, metaclass=ClientVerifier):
             if ask == 'in':
                 history_list = self.database.get_history(to_who=self.account_name)
                 for message in history_list:
-                    print(f'\nСообщение от пользователя: {message[0]} '
-                          f'от {message[3]}:\n{message[2]}')
+                    print(f'\nСообщение от {message[0]}:\n{message[2]}')
             elif ask == 'out':
                 history_list = self.database.get_history(from_who=self.account_name)
                 for message in history_list:
-                    print(f'\nСообщение пользователю: {message[1]} '
-                          f'от {message[3]}:\n{message[2]}')
+                    print(f'\nСообщение пользователю: {message[1]}:\n{message[2]}')
             else:
                 history_list = self.database.get_history()
                 for message in history_list:
                     print(f'\nСообщение от пользователя: {message[0]},'
-                          f' пользователю {message[1]} '
-                          f'от {message[3]}\n{message[2]}')
+                          f' пользователю {message[1]}:\n{message[2]}')
 
     def edit_contacts(self):
         ans = input('Для удаления введите del, для добавления add: ')
@@ -105,20 +102,22 @@ class ClientSender(threading.Thread, metaclass=ClientVerifier):
                         log.error('Не удалось отправить информацию на сервер.')
 
     def run(self):
-        help_msg = '1 - отправить сообщение\n2 - список команд\n3 - завершить соединение\n4 - Список контактов\n5 - Редактор контактов\n6 - История сообщений'
+        help_msg = '1 - отправить сообщение\n' \
+                   '2 - История сообщений\n' \
+                   '3 - Список контактов\n' \
+                   '4 - Редактор контактов\n' \
+                   '5 - Завершение соединения'
         print(help_msg)
         while True:
             while True:
                 command = input('Введите команду: ')
-                if command in ('1', '2', '3', '4', '5', '6'):
+                if command in ('1', '2', '3', '4', '5'):
                     break
                 print('Команда указана неверно. Повторите попытку.')
 
             if command == '1':
                 self.create_user_message()
-            elif command == '2':
-                print(help_msg)
-            elif command == '3':
+            elif command == '5':
                 with sock_lock:
                     try:
                         send_message(self.sock, self.create_exit_msg())
@@ -128,16 +127,16 @@ class ClientSender(threading.Thread, metaclass=ClientVerifier):
                     log.info('Соединение завершено по инициативе пользователяю')
                     time.sleep(0.5)
                     break
-            elif command == '4':
+            elif command == '3':
                 with database_lock:
                     contacts_list = self.database.get_contacts()
                 for contact in contacts_list:
                     print(contact)
 
-            elif command == '5':
+            elif command == '4':
                 self.edit_contacts()
 
-            elif command == '6':
+            elif command == '2':
                 self.print_history()
 
 
@@ -170,7 +169,7 @@ class ClientReader(threading.Thread, metaclass=ClientVerifier):
                     log.info(f'Получено сообщение от пользователя {message["sender"]}')
                     with database_lock:
                         try:
-                            self.database.save_message(message['sender'], self.account_name, message['message_text'])
+                            self.database.save_message(message['sender'], self.account_name, message['text'])
                         except Exception as e:
                             print(e)
 
