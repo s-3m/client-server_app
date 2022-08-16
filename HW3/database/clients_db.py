@@ -83,6 +83,12 @@ class ClientDB:
             return True
         return False
 
+    def check_contact(self, contact):
+        if self.session.query(self.Contacts).filter_by(name=contact).count():
+            return True
+        else:
+            return False
+
     def get_history(self, from_who=None, to_who=None):
         result = self.session.query(self.MessageHistory)
         if from_who:

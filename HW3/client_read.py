@@ -31,7 +31,7 @@ class ClientSender(threading.Thread, metaclass=ClientVerifier):
         with database_lock:
             if not self.database.check_user(to_user):
                 log.error(f'Попытка отправить сообщение '
-                             f'незарегистрированому получателю: {to_user}')
+                          f'незарегистрированому получателю: {to_user}')
                 return
         msg = {
             'action': 'message',
@@ -91,7 +91,7 @@ class ClientSender(threading.Thread, metaclass=ClientVerifier):
                 if self.database.check_contact(edit):
                     self.database.del_contact(edit)
                 else:
-                    logger.error('Попытка удаления несуществующего контакта.')
+                    log.error('Попытка удаления несуществующего контакта.')
         elif ans == 'add':
             # Проверка на возможность такого контакта
             edit = input('Введите имя создаваемого контакта: ')
@@ -102,7 +102,7 @@ class ClientSender(threading.Thread, metaclass=ClientVerifier):
                     try:
                         add_contact(self.sock, self.account_name, edit)
                     except ServerError:
-                        logger.error('Не удалось отправить информацию на сервер.')
+                        log.error('Не удалось отправить информацию на сервер.')
 
     def run(self):
         help_msg = '1 - отправить сообщение\n2 - список команд\n3 - завершить соединение\n4 - Список контактов\n5 - Редактор контактов\n6 - История сообщений'
@@ -154,7 +154,11 @@ class ClientReader(threading.Thread, metaclass=ClientVerifier):
             with sock_lock:
                 try:
                     message = get_message(self.sock)
-                except (OSError, ConnectionError, ConnectionAbortedError, ConnectionResetError) as err:
+                except OSError as err:
+                    if err.errno:
+                        log.critical(f'Потеряно соединение с сервером (cr-159).')
+                        break
+                except (ConnectionError, ConnectionAbortedError, ConnectionResetError) as err:
                     log.critical(f'Потеряно соединение с сервером - {err}')
                     break
                 except (Exception, BaseException) as err:
@@ -166,12 +170,12 @@ class ClientReader(threading.Thread, metaclass=ClientVerifier):
                     log.info(f'Получено сообщение от пользователя {message["sender"]}')
                     with database_lock:
                         try:
-                            self.database.save_message(message['sender'], self.account_name, message['message_taxt'])
+                            self.database.save_message(message['sender'], self.account_name, message['message_text'])
                         except Exception as e:
                             print(e)
 
 
-@log_
+# @log_
 def create_presence_message(my_name):
     msg = {"action": 'presence',
            "time": time.time(),
@@ -329,11 +333,11 @@ def main():
             client_db = ClientDB(client_name)
             db_load(client_socket, client_db, client_name)
 
-            module_receiver = ClientReader(client_name, client_socket)
+            module_receiver = ClientReader(client_name, client_socket, client_db)
             module_receiver.daemon = True
             module_receiver.start()
 
-            module_sender = ClientSender(client_name, client_socket)
+            module_sender = ClientSender(client_name, client_socket, client_db)
             module_sender.daemon = True
             module_sender.start()
             log.info('Процессы на чтение и отправку сообщений запущены')

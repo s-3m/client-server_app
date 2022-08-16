@@ -46,6 +46,7 @@ def create_stat_model(database):
         list_table.appendRow([user, last_seen, sent, recvd])
     return list_table
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -211,8 +212,6 @@ if __name__ == '__main__':
     # main_window.active_clients_table.resizeColumnsToContents()
     # app.exec_()
 
-
-
     # app = QApplication(sys.argv)
     # window = HistoryWindow()
     # test_list = QStandardItemModel(window)
@@ -226,7 +225,6 @@ if __name__ == '__main__':
     # window.history_table.resizeColumnsToContents()
     #
     # app.exec_()
-
 
     app = QApplication(sys.argv)
     dial = ConfigWindow()

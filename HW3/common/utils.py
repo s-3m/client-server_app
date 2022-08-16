@@ -4,7 +4,7 @@ sys.path.append('../')
 from log_decorator import log_
 
 
-@log_
+# @log_
 def send_message(client_socket, message):
     if not isinstance(message, dict):
         raise ValueError

@@ -30,7 +30,7 @@ class ServerDB:
             self.user = user
             self.ip = ip
             self.port = port
-            self.time_conn = time_conn
+            self.time_connection = time_conn
 
     class LoginHistory(Base):
         __tablename__ = 'login_history'
@@ -72,7 +72,7 @@ class ServerDB:
             self.accepted = 0
 
     def __init__(self, path):
-        self.engine = create_engine(f'sqlite:///{path}', echo=False, pool_recycle=7200)
+        self.engine = create_engine(f'sqlite:///{path}', echo=False, pool_recycle=7200, connect_args={'check_same_thread': False})
 
         self.Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
@@ -90,6 +90,8 @@ class ServerDB:
             user = self.AllUsers(username)
             self.session.add(user)
             self.session.commit()
+            user_in_history = self.UsersHistory(user.id)
+            self.session.add(user_in_history)
 
         new_active_user = self.ActiveUsers(user.id, ip, port, datetime.datetime.now())
         self.session.add(new_active_user)
@@ -116,8 +118,8 @@ class ServerDB:
         self.session.commit()
 
     def add_contact(self, user, contact):
-        user = self.session.query(self.AllUsers).filter_by(name=user).first()
-        contact = self.session.query(self.AllUsers).filter_by(name=contact).first()
+        user = self.session.query(self.AllUsers).filter_by(login=user).first()
+        contact = self.session.query(self.AllUsers).filter_by(login=contact).first()
 
         if not contact or self.session.query(self.UserContacts).filter_by(user=user.id, contact=contact.id).count():
             return
@@ -126,8 +128,8 @@ class ServerDB:
         self.session.commit()
 
     def remove_contact(self, user, contact):
-        user = self.session.query(self.AllUsers).filter_by(name=user).first()
-        contact = self.session.query(self.AllUsers).filter_by(name=contact).first()
+        user = self.session.query(self.AllUsers).filter_by(login=user).first()
+        contact = self.session.query(self.AllUsers).filter_by(login=contact).first()
 
         if not contact:
             return
@@ -138,9 +140,9 @@ class ServerDB:
         self.session.commit()
 
     def get_contacts(self, username):
-        user = self.session.query(self.AllUsers).filter_by(name=username).one()
+        user = self.session.query(self.AllUsers).filter_by(login=username).one()
 
-        query = self.session.query(self.UserContacts, self.AllUsers.name). \
+        query = self.session.query(self.UserContacts, self.AllUsers.login). \
             filter_by(user=user.id). \
             join(self.AllUsers, self.UserContacts.contact == self.AllUsers.id)
 
@@ -148,8 +150,8 @@ class ServerDB:
 
     def message_history(self):
         query = self.session.query(
-            self.AllUsers.name,
-            self.AllUsers.last_login,
+            self.AllUsers.login,
+            self.AllUsers.last_connection,
             self.UsersHistory.sent,
             self.UsersHistory.accepted
         ).join(self.AllUsers)

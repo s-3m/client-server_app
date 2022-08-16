@@ -184,7 +184,7 @@ class Server(threading.Thread, metaclass=ServerVerifier):
         elif 'action' in message and message['action'] == 'users_request' and 'account_name' in message \
                 and self.names[message['account_name']] == client:
             response = {'response': 202}
-            response['answer_list'] = [user[0] for user in self.server_db.users_list()]
+            response['answer_list'] = [user[0] for user in self.server_db.user_list()]
             send_message(client, response)
 
 
