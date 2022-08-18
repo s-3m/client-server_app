@@ -150,9 +150,13 @@ class Server(threading.Thread, metaclass=ServerVerifier):
 
         elif "action" in message and message["action"] == "message" and "time" in message \
                 and "sender" in message and "text" in message and self.names[message['destination']] in self.clients:
-            self.messages.append(message)
-            log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["sender"]}')
-            self.server_db.process_message(message['sender'], message['destination'])
+            if message['destination'] in self.names:
+                self.messages.append(message)
+                log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["sender"]}')
+                self.server_db.process_message(message['sender'], message['destination'])
+                send_message(client, {'response': 200})
+            else:
+                send_message(client, {'response': 400, 'error': 'Пользователь не зарегистрирован на сервере.'})
             return
         elif 'action' in message and message['action'] == 'exit' and 'account_name' in message:
             self.server_db.user_logout(message['account_name'])
@@ -186,7 +190,6 @@ class Server(threading.Thread, metaclass=ServerVerifier):
             response = {'response': 202}
             response['answer_list'] = [user[0] for user in self.server_db.user_list()]
             send_message(client, response)
-
 
         else:
             send_message(client, {"response": 400, "error": "Bad Request"})

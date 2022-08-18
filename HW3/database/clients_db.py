@@ -1,5 +1,7 @@
+import os
+
 from sqlalchemy import create_engine, Table, Column, Integer, String, Text, MetaData, DateTime
-from sqlalchemy.orm import mapper, sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base
 import datetime
 
 
@@ -17,14 +19,14 @@ class ClientDB:
     class MessageHistory(Base):
         __tablename__ = 'message_history'
         id = Column(Integer, primary_key=True)
-        from_user = Column(String)
-        to_user = Column(String)
+        contact = Column(String)
+        direction = Column(String)
         message = Column(Text)
         date = Column(DateTime)
 
-        def __init__(self, from_user, to_user, message):
-            self.from_user = from_user
-            self.to_user = to_user
+        def __init__(self, contact, direction, message):
+            self.contact = contact
+            self.direction = direction
             self.message = message
             self.date = datetime.datetime.now()
 
@@ -37,11 +39,12 @@ class ClientDB:
             self.name = name
 
     def __init__(self, name):
-        self.engine = create_engine(
-            f'sqlite:///clients_{name}_db.db3',
-            echo=False, pool_recycle=7200,
-            connect_args={'check_same_thread': False}
-        )
+        path = os.path.dirname(os.path.realpath(__file__))
+        filename = f'client_{name}.db3'
+        self.engine = create_engine(f'sqlite:///{os.path.join(path, filename)}',
+                                    echo=False,
+                                    pool_recycle=7200,
+                                    connect_args={'check_same_thread': False})
 
         self.Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
@@ -89,13 +92,9 @@ class ClientDB:
         else:
             return False
 
-    def get_history(self, from_who=None, to_who=None):
-        result = self.session.query(self.MessageHistory)
-        if from_who:
-            result = result.filter_by(from_user=from_who)
-        if to_who:
-            result = result.filter_by(to_user=to_who)
-        return [(history.from_user, history.to_user, history.message) for history in result.all()]
+    def get_history(self, contact):
+        result = self.session.query(self.MessageHistory).filter_by(contact=contact)
+        return [(history.contact, history.direction, history.message, history.date) for history in result.all()]
 
 
 if __name__ == '__main__':
@@ -104,16 +103,14 @@ if __name__ == '__main__':
         test_db.add_contact(i)
     test_db.add_contact('test4')
     test_db.add_users(['test1', 'test2', 'test3', 'test4', 'test5'])
-    test_db.save_message('test1', 'test2',
-                         f'Привет! я тестовое сообщение от {datetime.datetime.now().replace(microsecond=0)}!')
-    test_db.save_message('test2', 'test1',
-                         f'Привет! я другое тестовое сообщение от {datetime.datetime.now().replace(microsecond=0)}!')
+    test_db.save_message('test2', 'in',
+                         f'Привет! я тестовое сообщение от {datetime.datetime.now()}!')
+    test_db.save_message('test2', 'out',
+                         f'Привет! я другое тестовое сообщение от {datetime.datetime.now()}!')
     print(test_db.get_contacts())
     print(test_db.get_users())
     print(test_db.check_user('test1'))
     print(test_db.check_user('test10'))
-    print(test_db.get_history('test2'))
-    print(test_db.get_history(to_who='test2'))
-    print(test_db.get_history('test3'))
+    print(sorted(test_db.get_history('test2'), key=lambda item: item[3]))
     test_db.del_contact('test4')
     print(test_db.get_contacts())

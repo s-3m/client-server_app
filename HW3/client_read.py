@@ -4,7 +4,12 @@ import sys
 import threading
 import time
 
+from PyQt5.QtWidgets import QApplication
+
 from Errors.my_err import ServerError
+from client.GUI_main_window import ClientMainWindow
+from client.start_dialog import UserNameDialog
+from client.transport import ClientTransport
 from common.utils import send_message, get_message
 import logging
 from log_decorator import log_
@@ -216,137 +221,48 @@ def arg_parser():
     return server_address, server_port, client_name
 
 
-def add_contact(sock, username, contact):
-    log.debug(f'Создание контакта {contact}')
-    msg = {
-        'action': 'add_contact',
-        'time': time.time(),
-        'user': username,
-        'account_name': contact
-    }
-    send_message(sock, msg)
-    ans = get_message(sock)
-    if 'response' in ans and ans['response'] == 200:
-        pass
-    else:
-        raise ServerError('Ошибка создания контакта')
-    print('Удачное создание контакта.')
-
-
-def remove_contact(sock, username, contact):
-    log.debug(f'Создание контакта {contact}')
-    msg = {
-        'action': 'remove_contact',
-        'time': time.time(),
-        'user': username,
-        'account_name': contact
-    }
-    send_message(sock, msg)
-    ans = get_message(sock)
-    if 'response' in ans and ans['response'] == 200:
-        pass
-    else:
-        raise ServerError('Ошибка удаления контакта')
-    print('Ошибка удаление контакта.')
-
-
-def contacts_list_request(sock, name):
-    log.debug(f'запрос списка контактов пользователя {name}')
-    msg = {
-        'action': 'get_contacts',
-        'time': time.time(),
-        'user': name
-    }
-    send_message(sock, msg)
-    ans = get_message(sock)
-    if 'response' in ans and ans['response'] == 202:
-        return ans['answer_list']
-    else:
-        raise ServerError('Неудалось получить список контактов')
-
-
-def user_list_request(sock, username):
-    log.debug(f'Запрос списка пользователей {username}')
-    msg = {
-        'action': 'users_request',
-        'time': time.time(),
-        'account_name': username
-    }
-    send_message(sock, msg)
-    ans = get_message(sock)
-    if 'response' in ans and ans['response'] == 202:
-        return ans['answer_list']
-    else:
-        raise ServerError('Не удалось получить список пользователей')
-
-
-def db_load(sock, db, username):
-    try:
-        users_list = user_list_request(sock, username)
-    except ServerError:
-        log.error('Ошибка запроса списка пользователей')
-        print('error - line145')
-    else:
-        db.add_users(users_list)
-
-    try:
-        contact_list = contacts_list_request(sock, username)
-    except ServerError:
-        log.error('Ошибка запроса списка контактов')
-    else:
-        for contact in contact_list:
-            db.add_contact(contact)
-
-
-def main():
-    log.info('Клиентский модуль. Процесс соединения с сервером запущен.')
-
+if __name__ == '__main__':
+    # Загружаем параметы коммандной строки
     server_address, server_port, client_name = arg_parser()
 
+    # Создаём клиентокое приложение
+    client_app = QApplication(sys.argv)
+
+    # Если имя пользователя не было указано в командной строке, то запросим его
     if not client_name:
-        client_name = input('Пожалуйста введите имя пользователя: ')
-    else:
-        print(f'Здравствуйте {client_name}. Добро пожаловать')
-
-    log.info(f'Соединение запущено клиентом {client_name}. IP: {server_address}; PORT: {server_port}')
-
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-        client_socket.settimeout(1)
-        client_socket.connect((server_address, server_port))
-        send_message(client_socket, create_presence_message(client_name))
-        log.info('Приветственное сообщение на сервер отправлено.')
-        try:
-            answer_from_server = answer_to_connect(get_message(client_socket))
-            print(answer_from_server)
-            log.info(f'Сообщение от сервера - {answer_from_server}')
-        except ValueError:
-            log.error('Не удалось разобрать сообщение от сервера. Ключ "Response" отсутствует в ответе сервера.')
-            sys.exit(1)
-        except (ConnectionRefusedError, ConnectionError):
-            log.critical(
-                f'Не удалось подключиться к серверу {server_address}:{server_port}, '
-                f'конечный компьютер отверг запрос на подключение.')
-            exit(1)
-
+        start_dialog = UserNameDialog()
+        client_app.exec_()
+        # Если пользователь ввёл имя и нажал ОК, то сохраняем ведённое и удаляем объект.
+        # Иначе - выходим
+        if start_dialog.ok_pressed:
+            client_name = start_dialog.client_name.text()
+            del start_dialog
         else:
-            client_db = ClientDB(client_name)
-            db_load(client_socket, client_db, client_name)
+            exit(0)
 
-            module_receiver = ClientReader(client_name, client_socket, client_db)
-            module_receiver.daemon = True
-            module_receiver.start()
+    # Записываем логи
+    log.info(
+        f'Запущен клиент с парамертами: адрес сервера: {server_address} , '
+        f'порт: {server_port}, имя пользователя: {client_name}')
 
-            module_sender = ClientSender(client_name, client_socket, client_db)
-            module_sender.daemon = True
-            module_sender.start()
-            log.info('Процессы на чтение и отправку сообщений запущены')
+    # Создаём объект базы данных
+    database = ClientDB(client_name)
 
-            while True:
-                time.sleep(1)
-                if module_receiver.is_alive() and module_sender.is_alive():
-                    continue
-                break
+    # Создаём объект - транспорт и запускаем транспортный поток
+    try:
+        transport = ClientTransport(server_port, server_address, database, client_name)
+    except ServerError as error:
+        print(error.text)
+        exit(1)
+    transport.setDaemon(True)
+    transport.start()
 
+    # Создаём GUI
+    main_window = ClientMainWindow(database, transport)
+    main_window.make_connection(transport)
+    main_window.setWindowTitle(f'Чат Программа alpha release - {client_name}')
+    client_app.exec_()
 
-if __name__ == '__main__':
-    main()
+    # Раз графическая оболочка закрылась, закрываем транспорт
+    transport.transport_shutdown()
+    transport.join()
