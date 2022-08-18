@@ -260,6 +260,7 @@ class ClientMainWindow(QMainWindow):
 
 
 if __name__ == '__main__':
+    # print(sys.path)
     app = QApplication(sys.argv)
     from database import ClientDatabase
     database = ClientDatabase('test1')

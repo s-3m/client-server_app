@@ -28,13 +28,13 @@ PRESENCE = 'presence'
 RESPONSE = 'response'
 ERROR = 'error'
 MESSAGE = 'message'
-MESSAGE_TEXT = 'mess_text'
+MESSAGE_TEXT = 'text'
 EXIT = 'exit'
 GET_CONTACTS = 'get_contacts'
-LIST_INFO = 'data_list'
+LIST_INFO = 'answer_list'
 REMOVE_CONTACT = 'remove'
-ADD_CONTACT = 'add'
-USERS_REQUEST = 'get_users'
+ADD_CONTACT = 'add_contact'
+USERS_REQUEST = 'users_request'
 
 # Словари - ответы:
 # 200
