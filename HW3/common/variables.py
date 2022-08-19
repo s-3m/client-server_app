@@ -20,8 +20,8 @@ ACTION = 'action'
 TIME = 'time'
 USER = 'user'
 ACCOUNT_NAME = 'account_name'
-SENDER = 'from'
-DESTINATION = 'to'
+SENDER = 'sender'
+DESTINATION = 'destination'
 
 # Прочие ключи, используемые в протоколе
 PRESENCE = 'presence'
