@@ -6,6 +6,7 @@ import socket
 import sys
 from time import sleep
 
+from HW3.common.variables import DEFAULT_PORT
 from common.meta_classes import ServerVerifier
 from common.utils import send_message, get_message
 import logging
@@ -150,9 +151,13 @@ class Server(threading.Thread, metaclass=ServerVerifier):
 
         elif "action" in message and message["action"] == "message" and "time" in message \
                 and "sender" in message and "text" in message and self.names[message['destination']] in self.clients:
-            self.messages.append(message)
-            log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["sender"]}')
-            self.server_db.process_message(message['sender'], message['destination'])
+            if message['destination'] in self.names:
+                self.messages.append(message)
+                log.info(f'Получено сообщение: "{message["text"]}" от пользователя {message["sender"]}')
+                self.server_db.process_message(message['sender'], message['destination'])
+                send_message(client, {'response': 200})
+            else:
+                send_message(client, {'response': 400, 'error': 'Пользователь не зарегистрирован на сервере.'})
             return
         elif 'action' in message and message['action'] == 'exit' and 'account_name' in message:
             self.server_db.user_logout(message['account_name'])
@@ -165,8 +170,7 @@ class Server(threading.Thread, metaclass=ServerVerifier):
 
         elif 'action' in message and message['action'] == 'get_contacts' and 'user' in message and \
                 self.names[message['user']] == client:
-            response = {'response': 202}
-            response['answer_list'] = self.server_db.get_contacts(message['user'])
+            response = {'response': 202, 'answer_list': self.server_db.get_contacts(message['user'])}
             send_message(client, response)
 
         elif 'action' in message and message[
@@ -183,32 +187,32 @@ class Server(threading.Thread, metaclass=ServerVerifier):
 
         elif 'action' in message and message['action'] == 'users_request' and 'account_name' in message \
                 and self.names[message['account_name']] == client:
-            response = {'response': 202}
-            response['answer_list'] = [user[0] for user in self.server_db.user_list()]
+            response = {'response': 202, 'answer_list': [user[0] for user in self.server_db.user_list()]}
             send_message(client, response)
-
 
         else:
             send_message(client, {"response": 400, "error": "Bad Request"})
             return
 
 
-def print_help():
-    sleep(0.1)
-    print('-----------------------------------------------------------')
-    print('all - список всех зарегестрированных пользователей')
-    print('active - список активных пользователей')
-    print('login history - просмотр истории входа')
-    print('help - список доступных команд')
-    print('-----------------------------------------------------------')
-
-
-def main():
+def config_load():
     config = configparser.ConfigParser()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     config.read(f"{dir_path}/{'server.ini'}")
+    if 'SETTINGS' in config:
+        return config
+    else:
+        config.add_section('SETTINGS')
+        config.set('SETTINGS', 'Default_port', str(DEFAULT_PORT))
+        config.set('SETTINGS', 'Listen_Address', '')
+        config.set('SETTINGS', 'Database_path', '')
+        config.set('SETTINGS', 'Database_file', 'server_database.db3')
+        return config
 
+
+def main():
+    config = config_load()
     listen_address, listen_port = arg_parser(
         config['SETTINGS']['Default_port'], config['SETTINGS']['Listen_Address']
     )
@@ -272,10 +276,11 @@ def main():
             if 1023 < port < 65536:
                 config['SETTINGS']['Default_port'] = str(port)
                 print(port)
-                with open('server.ini', 'w') as conf:
+                dir_path = os.path.dirname(os.path.realpath(__file__))
+
+                with open(f"{dir_path}/{'server_dist.ini'}", 'w') as conf:
                     config.write(conf)
-                    message.information(
-                        config_window, 'OK', 'Настройки успешно сохранены!')
+                    message.information(config_window, 'OK', 'Настройки успешно сохранены!')
             else:
                 message.warning(
                     config_window,
@@ -291,31 +296,6 @@ def main():
     main_window.server_settings.triggered.connect(server_config)
 
     server_app.exec_()
-
-    # print_help()
-
-    # while True:
-    #     answer = input('Введите команду: ')
-    #     if answer == 'all':
-    #         for user in sorted(server_db.user_list()):
-    #             print(f'Пользователь "{user[0]}". Дата последнего входа - {user[1]}')
-    #     elif answer == 'active':
-    #         for user in sorted(server_db.active_users_list()):
-    #             print(f'Пользователь "{user[0]}". IP: {user[1]}; Port: {user[2]}; Дата последнего входа - {user[3]}')
-    #     elif answer == 'login history':
-    #         need_user = input('Введите имя пользователя либо оставьте поле пустым: ')
-    #         if need_user:
-    #             for user in server_db.login_history(need_user):
-    #                 print(
-    #                     f'Пользователь "{user[0]}". IP: {user[2]}; Port: {user[3]}; Дата последнего входа - {user[1]}')
-    #         else:
-    #             for user in server_db.login_history():
-    #                 print(
-    #                     f'Пользователь "{user[0]}". IP: {user[2]}; Port: {user[3]}; Дата последнего входа - {user[1]}')
-    #     elif answer == 'help':
-    #         print_help()
-    #     else:
-    #         print('Неверная команда!')
 
 
 if __name__ == '__main__':
