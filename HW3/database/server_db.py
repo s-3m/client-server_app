@@ -12,10 +12,13 @@ class ServerDB:
         id = Column(Integer, primary_key=True)
         login = Column(String, unique=True)
         last_connection = Column(DateTime)
+        passwd_hash = Column(String)
 
-        def __init__(self, login):
+        def __init__(self, login, passwd_hash):
             self.login = login
             self.last_connection = datetime.datetime.now()
+            self.passwd_hash = passwd_hash
+            self.pubkey = None
 
     class ActiveUsers(Base):
         __tablename__ = 'active_users'
@@ -81,17 +84,16 @@ class ServerDB:
         self.session.query(self.ActiveUsers).delete()
         self.session.commit()
 
-    def user_login(self, username, ip, port):
+    def user_login(self, username, ip, port, key):
         result = self.session.query(self.AllUsers).filter_by(login=username)
         if result.count():
             user = result.first()
             user.last_connection = datetime.datetime.now()
+            if user.pubkey !=key:
+                user.pubkey = key
         else:
-            user = self.AllUsers(username)
-            self.session.add(user)
-            self.session.commit()
-            user_in_history = self.UsersHistory(user.id)
-            self.session.add(user_in_history)
+            raise ValueError('Пользователь не зарегистрирован.')
+
 
         new_active_user = self.ActiveUsers(user.id, ip, port, datetime.datetime.now())
         self.session.add(new_active_user)
@@ -100,11 +102,47 @@ class ServerDB:
 
         self.session.commit()
 
+    def add_user(self, name, passwd_hash):
+
+        user_row = self.AllUsers(name, passwd_hash)
+        self.session.add(user_row)
+        self.session.commit()
+        history_row = self.UsersHistory(user_row.id)
+        self.session.add(history_row)
+        self.session.commit()
+
+    def remove_user(self, name):
+
+        user = self.session.query(self.AllUsers).filter_by(login=name).first()
+        self.session.query(self.ActiveUsers).filter_by(user=user.id).delete()
+        self.session.query(self.LoginHistory).filter_by(login=user.id).delete()
+        self.session.query(self.UserContacts).filter_by(user=user.id).delete()
+        self.session.query(
+            self.UserContacts).filter_by(
+            contact=user.id).delete()
+        self.session.query(self.UsersHistory).filter_by(user=user.id).delete()
+        self.session.query(self.AllUsers).filter_by(login=name).delete()
+        self.session.commit()
+
     def user_logout(self, username):
         user = self.session.query(self.AllUsers).filter_by(login=username).first()
         self.session.query(self.ActiveUsers).filter_by(user=user.id).delete()
 
         self.session.commit()
+
+    def get_hash(self, name):
+        user = self.session.query(self.AllUsers).filter_by(login=name).first()
+        return user.passwd_hash
+
+    def get_pubkey(self, name):
+        user = self.session.query(self.AllUsers).filter_by(login=name).first()
+        return user.pubkey
+
+    def check_user(self, name):
+        if self.session.query(self.AllUsers).filter_by(name=name).count():
+            return True
+        else:
+            return False
 
     def process_message(self, sender, recipient):
         sender = self.session.query(self.AllUsers).filter_by(login=sender).first().id
@@ -185,11 +223,3 @@ class ServerDB:
         if username:
             res = res.filter(self.AllUsers.login == username)
         return res.all()
-
-
-if __name__ == '__main__':
-    db = ServerDB()
-    db.user_login('user1', '127.0.0.2', 7777)
-    db.user_login('user2', '127.0.0.3', 7777)
-
-
