@@ -12,13 +12,13 @@ from common.meta_classes import ServerVerifier
 from common.descriptors import ServerPortChecker
 from common.variables import *
 from common.utils import send_message, get_message
-from log_decorators import login_required
+from log_decorator import login_required
 
 # Загрузка логера
 logger = logging.getLogger('server_dist')
 
 
-class MessageProcessor(threading.Thread, metaclass=ServerVerifier):
+class MessageProcessor(threading.Thread):
     """
     Основной класс сервера. Принимает содинения, словари - пакеты
     от клиентов, обрабатывает поступающие сообщения.
@@ -207,7 +207,7 @@ class MessageProcessor(threading.Thread, metaclass=ServerVerifier):
                 and self.names[message[ACCOUNT_NAME]] == client:
             response = RESPONSE_202
             response[LIST_INFO] = [user[0]
-                                   for user in self.database.users_list()]
+                                   for user in self.database.user_list()]
             try:
                 send_message(client, response)
             except OSError:
@@ -318,7 +318,7 @@ class MessageProcessor(threading.Thread, metaclass=ServerVerifier):
                 sock.close()
 
     def service_update_lists(self):
-        '''Метод реализующий отправки сервисного сообщения 205 клиентам.'''
+        """Метод реализующий отправки сервисного сообщения 205 клиентам."""
         for client in self.names:
             try:
                 send_message(self.names[client], RESPONSE_205)

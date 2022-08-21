@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QLabel, QT
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QBrush, QColor
 from PyQt5.QtCore import pyqtSlot, QEvent, Qt
 import logging
+
 sys.path.append('../')
 from client.main_window_conv import Ui_MainClientWindow
 from client.add_contact import AddContactDialog
@@ -221,7 +222,7 @@ class ClientMainWindow(QMainWindow):
             self.history_list_update()
 
     # Слот приёма нового сообщений
-    @pyqtSlot(str)
+    @pyqtSlot(dict)
     def message(self, sender):
         if sender == self.current_chat:
             self.history_list_update()
@@ -239,10 +240,10 @@ class ClientMainWindow(QMainWindow):
                 print('NO')
                 # Раз нет, спрашиваем хотим ли добавить юзера в контакты.
                 if self.messages.question(self, 'Новое сообщение',
-                              f'Получено новое сообщение от {sender}.\n '
-                              f'Данного пользователя нет в вашем контакт-листе.\n'
-                              f' Добавить в контакты и открыть чат с ним?',
-                              QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                                          f'Получено новое сообщение от {sender}.\n '
+                                          f'Данного пользователя нет в вашем контакт-листе.\n'
+                                          f' Добавить в контакты и открыть чат с ним?',
+                                          QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
                     self.add_contact(sender)
                     self.current_chat = sender
                     self.set_active_user()
@@ -254,17 +255,33 @@ class ClientMainWindow(QMainWindow):
         self.messages.warning(self, 'Сбой соединения', 'Потеряно соединение с сервером. ')
         self.close()
 
+    @pyqtSlot()
+    def sig_205(self):
+
+        if self.current_chat and not self.database.check_user(
+                self.current_chat):
+            self.messages.warning(
+                self,
+                'Сочувствую',
+                'К сожалению собеседник был удалён с сервера.')
+            self.set_disabled_input()
+            self.current_chat = None
+        self.clients_list_update()
+
     def make_connection(self, trans_obj):
         trans_obj.new_message.connect(self.message)
         trans_obj.connection_lost.connect(self.connection_lost)
+        trans_obj.message_205.connect(self.sig_205)
 
 
 if __name__ == '__main__':
     # print(sys.path)
     app = QApplication(sys.argv)
     from database import ClientDatabase
+
     database = ClientDatabase('test1')
     from transport import ClientTransport
+
     transport = ClientTransport(7777, '127.0.0.1', database, 'test1')
     window = ClientMainWindow(database, transport)
     sys.exit(app.exec_())

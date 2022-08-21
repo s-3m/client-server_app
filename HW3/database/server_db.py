@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import datetime
@@ -13,12 +13,13 @@ class ServerDB:
         login = Column(String, unique=True)
         last_connection = Column(DateTime)
         passwd_hash = Column(String)
+        pubkey = Column(Text)
 
         def __init__(self, login, passwd_hash):
+            self.pubkey = None
             self.login = login
             self.last_connection = datetime.datetime.now()
             self.passwd_hash = passwd_hash
-            self.pubkey = None
 
     class ActiveUsers(Base):
         __tablename__ = 'active_users'
@@ -89,7 +90,7 @@ class ServerDB:
         if result.count():
             user = result.first()
             user.last_connection = datetime.datetime.now()
-            if user.pubkey !=key:
+            if user.pubkey != key:
                 user.pubkey = key
         else:
             raise ValueError('Пользователь не зарегистрирован.')
@@ -139,7 +140,7 @@ class ServerDB:
         return user.pubkey
 
     def check_user(self, name):
-        if self.session.query(self.AllUsers).filter_by(name=name).count():
+        if self.session.query(self.AllUsers).filter_by(login=name).count():
             return True
         else:
             return False
