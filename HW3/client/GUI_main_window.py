@@ -223,34 +223,33 @@ class ClientMainWindow(QMainWindow):
 
     # Слот приёма нового сообщений
     @pyqtSlot(dict)
-    def message(self, sender):
-        if sender == self.current_chat:
+    def message(self, message):
+        if message['sender'] == self.current_chat:
             self.history_list_update()
         else:
             # Проверим есть ли такой пользователь у нас в контактах:
-            if self.database.check_contact(sender):
+            if self.database.check_contact(message['sender']):
                 # Если есть, спрашиваем о желании открыть с ним чат и открываем при желании
                 if self.messages.question(self, 'Новое сообщение',
-                                          f'Получено новое сообщение от {sender}, '
+                                          f'Получено новое сообщение от {message["sender"]}, '
                                           f'открыть чат с ним?', QMessageBox.Yes,
                                           QMessageBox.No) == QMessageBox.Yes:
-                    self.current_chat = sender
+                    self.current_chat = message['sender']
                     self.set_active_user()
             else:
                 print('NO')
                 # Раз нет, спрашиваем хотим ли добавить юзера в контакты.
                 if self.messages.question(self, 'Новое сообщение',
-                                          f'Получено новое сообщение от {sender}.\n '
+                                          f'Получено новое сообщение от {message["sender"]}.\n '
                                           f'Данного пользователя нет в вашем контакт-листе.\n'
                                           f' Добавить в контакты и открыть чат с ним?',
                                           QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
-                    self.add_contact(sender)
-                    self.current_chat = sender
+                    self.add_contact(message["sender"])
+                    self.current_chat = message["sender"]
                     self.set_active_user()
 
     # Слот потери соединения
     # Выдаёт сообщение об ошибке и завершает работу приложения
-    @pyqtSlot()
     def connection_lost(self):
         self.messages.warning(self, 'Сбой соединения', 'Потеряно соединение с сервером. ')
         self.close()

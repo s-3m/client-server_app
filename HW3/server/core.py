@@ -124,8 +124,7 @@ class MessageProcessor(threading.Thread):
         '''
         Метод отправки сообщения клиенту.
         '''
-        if message[DESTINATION] in self.names and self.names[message[DESTINATION]
-        ] in self.listen_sockets:
+        if message[DESTINATION] in self.names and self.names[message[DESTINATION]] in self.listen_sockets:
             try:
                 send_message(self.names[message[DESTINATION]], message)
                 logger.info(
