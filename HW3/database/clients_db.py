@@ -70,8 +70,8 @@ class ClientDB:
             self.session.add(user)
             self.session.commit()
 
-    def save_message(self, from_user, to_user, message):
-        message = self.MessageHistory(from_user, to_user, message)
+    def save_message(self, from_user, direction, message):
+        message = self.MessageHistory(from_user, direction, message)
         self.session.add(message)
         self.session.commit()
 

@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 import hashlib
 import binascii
 
+
 class RegisterUser(QDialog):
     def __init__(self, database, server):
         super().__init__()
@@ -82,4 +83,3 @@ class RegisterUser(QDialog):
             # Рассылаем клиентам сообщение о необходимости обновить справочники
             self.server.service_update_lists()
             self.close()
-            
