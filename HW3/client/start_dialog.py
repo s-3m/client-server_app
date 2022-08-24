@@ -46,7 +46,3 @@ class UserNameDialog(QDialog):
             qApp.exit()
 
 
-if __name__ == '__main__':
-    app = QApplication([])
-    dial = UserNameDialog()
-    app.exec_()

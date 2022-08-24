@@ -7,7 +7,7 @@ from Crypto.PublicKey import RSA
 import threading
 import time
 
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, qApp, QMessageBox
 
 from Errors.my_err import ServerError
 from client.GUI_main_window import ClientMainWindow
@@ -89,15 +89,19 @@ if __name__ == '__main__':
     try:
         transport = ClientTransport(server_port, server_address, database, client_name, client_passwd, keys)
     except ServerError as error:
-        print(error.text)
+        message = QMessageBox()
+        message.critical(start_dialog, 'Ошибка сервера', error.text)
         exit(1)
+
     transport.daemon
     transport.start()
+
+    del start_dialog
 
     # Создаём GUI
     main_window = ClientMainWindow(database, transport, keys)
     main_window.make_connection(transport)
-    main_window.setWindowTitle(f'Чат Программа alpha release - {client_name}')
+    main_window.setWindowTitle(f'Чат Программа - {client_name}')
     client_app.exec_()
 
     # Раз графическая оболочка закрылась, закрываем транспорт

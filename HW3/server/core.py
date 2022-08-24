@@ -36,7 +36,8 @@ class MessageProcessor(threading.Thread):
 
         # Сокет, через который будет осуществляться работа
         self.sock = None
-
+        self.error_sockets = None
+        self.listen_sockets = None
         # Список подключённых клиентов.
         self.clients = []
 

@@ -59,6 +59,10 @@ class ClientDB:
             self.session.add(contact)
             self.session.commit()
 
+    def contacts_clear(self):
+        self.session.query(self.Contacts).delete()
+        self.session.commit()
+
     def del_contact(self, contact):
         self.session.query(self.Contacts).filter_by(name=contact).delete()
         self.session.commit()
