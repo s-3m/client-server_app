@@ -1,26 +1,16 @@
 import argparse
 import configparser
 import os.path
-import select
-import socket
 import sys
-from time import sleep
-
-from PyQt5 import Qt
 
 from HW3.common.variables import DEFAULT_PORT
-from common.meta_classes import ServerVerifier
-from common.utils import send_message, get_message
 import logging
 from log_decorator import log_
-from common.descriptors import ServerPortChecker
-from database.server_db import ServerDB
+from server.server_db import ServerDB
 import threading
-from PyQt5.QtWidgets import QApplication, QMessageBox
-from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QApplication
 from server.main_window import MainWindow
 from server.core import MessageProcessor
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 log = logging.getLogger('server')
 # флаг о подключении нового пользователя
